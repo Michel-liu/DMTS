@@ -1,1 +1,3 @@
-Height = 1000 #屏幕宽度，全局变量
+MaxWidth = 0
+MaxHeight = 0
+imgLabel = None

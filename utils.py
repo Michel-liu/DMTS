@@ -1,10 +1,17 @@
 import datetime
 import time
+import config
+from PIL import Image, ImageTk
+from config import *
+
+from gui import imgLabel, MaxWidth, MaxHeight
+
 
 class Logger:
     """ 日志记录类
     负责向指定的文件路径中写入运行日志
     """
+
     def __init__(self, saveFilePath='log.txt', name='test1'):
         """
         初始化
@@ -77,7 +84,7 @@ class Logger:
         :return: 正确率 float
         """
         assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
-        return len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1])/len(self.keyPressInfoList)
+        return len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
 
     def getAvgActTime(self):
         """
@@ -91,7 +98,7 @@ class Logger:
                 avgTime = avgTime + (self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
             else:
                 avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
-        return avgTime/len(self.imgShowInfoList)
+        return avgTime / len(self.imgShowInfoList)
 
     def list2LogFile(self, logList, endWith='\n'):
         """
@@ -125,13 +132,85 @@ class Logger:
         self.logFileString.close()
 
 
+def handlerAdaptor(fun, **kwds):
+    return lambda event, fun=fun, kwds=kwds: fun(event, **kwds)
+
+
+def callback(event, path, maxw, maxh):
+    """
+    处理鼠标左键点击事件
+    :param maxw:
+    :param path:
+    :param event:
+    :return:
+    """
+    print(event.x, event.y)
+    label = event.widget
+    photo = loadPic(path, maxw, maxh)
+    label.configure(image=photo)
+
+def callbackStart(event,maxw,maxh):
+    """
+
+    :param event:
+    :return:
+    """
+    photo = loadPic(r'./img/1_16.png',maxw,maxh)
+    label = event.widget
+    label.configure(image = photo)
+    # 十字显示500ms
+    time.sleep(0.5)
+    # 随机显示四个图片
+    photo = loadPic(r'./img/5.png',maxw,maxh)
+    label.configure(image = photo)
+    time.sleep(1)
+
+    photo = loadPic(r'./img/9.png',maxw,maxh)
+    label.configure(image = photo)
+    time.sleep(1)
+
+    photo = loadPic(r'./img/13.png',maxw,maxh)
+    label.configure(image = photo)
+    time.sleep(1)
+
+    photo = loadPic(r'./img/2.png',maxw,maxh)
+    label.configure(image = photo)
+    time.sleep(1)
+
+
+
+
+def resize(w, h, w_box, h_box, pil_image):
+    '''
+  resize a pil_image object so it will fit into
+  a box of size w_box times h_box, but retain aspect ratio
+  对一个pil_image对象进行缩放，让它在一个矩形框内，还能保持比例
+  '''
+    f1 = 1.0 * w_box / w  # 1.0 forces float division in Python2
+    f2 = 1.0 * h_box / h
+    factor = min([f1, f2])
+    # print(f1, f2, factor) # test
+    # use best down-sizing filter
+    width = int(w * factor)
+    height = int(h * factor)
+    return pil_image.resize((width, height), Image.ANTIALIAS)
+
+
+def loadPic(path, maxh, maxw):
+    img = Image.open(path)
+    w, h = img.size
+    img_resize = resize(h, w, maxh, maxw, img)
+    photo = ImageTk.PhotoImage(img_resize)
+    return photo
+
+
 if __name__ == '__main__':
     logger = Logger()
-    logger.logImgShow(1,True)
+    logger.logImgShow(1, True)
     time.sleep(0.5)
     logger.logPressKey('m', True, '1')
     time.sleep(1)
-    logger.logImgShow(2,True)
+    logger.logImgShow(2, True)
     time.sleep(0.5)
     logger.logPressKey('c', True, '0')
     logger.closeFile()
