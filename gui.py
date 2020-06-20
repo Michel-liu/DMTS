@@ -1,33 +1,25 @@
 from tkinter import *
+from PIL import ImageTk,Image
+import config
+
+def callback(event):
+    print(config.Height)
+    return (event.x, event.y)
 
 class DMS():
-    root = Tk()
-    MaxWidth = 1000
-    MaxHeight = 1000
-    row = 4
-    column = 4
     def __init__(self):
-        self.CreateFrame()
-        self.CreateGrid()
-
-    def CreateFrame(self):
+        self.root = Tk()
+        self.MaxWidth = self.root.winfo_screenheight()
+        self.MaxHeight = self.root.winfo_screenheight()
+        config.Height = self.MaxHeight
         self.root.title("DMS测试")
-        self.root.geometry(str(self.MaxWidth)+"x"+str(self.MaxHeight))
+        self.frame = Frame(self.root,height = self.MaxHeight,width = self.MaxWidth)
         self.root.resizable(0,0)
-    def CreateGrid(self):
-        for i in range(self.row * self.column):
-            row = i // self.row + 1
-            col = i % self.row + 1
-            frame = Frame(self.root,height = 25,width = 25).grid(row = row,column = col)
-            Button(frame,text = "hell world").grid(row = 1,column = 1)
-        row_count,column_count = self.root.grid_size()
-        for row in range(1,row_count+1):
-            self.root.grid_rowconfigure(row,minsize = 0)
-        for col in range(1,column_count+1):
-            self.root.grid_columnconfigure(col,minsize = 0)
+        self.ClickEvent()
 
-
-
+    def ClickEvent(self):
+        self.frame.bind("<Button-1>",callback)
+        self.frame.pack()
     def Show(self):
         self.root.mainloop()
 
