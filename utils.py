@@ -21,6 +21,7 @@ class Logger:
         """
         self.imgShowInfoList = []
         self.keyPressInfoList = []
+        self.mouseClickInfoList = []
 
         self.logFileString = open(saveFilePath, 'w')
 
@@ -70,6 +71,30 @@ class Logger:
                 theLogList.append(", Wrong")
         self.list2LogFile(theLogList)
 
+    def logMouseClick(self, x, y, regionIndex, addTrack=False, isCrorrect=''):
+        theLogList = []
+        nowTime = self.getCurTime(False)
+        if addTrack:
+            assert isCrorrect != '', "logMouseClick function needs the parm 'isCrorrect'!"
+            self.mouseClickInfoList.append({
+                "time": nowTime,
+                "position": {
+                    "x": x,
+                    "y": y,
+                    "region": regionIndex
+                },
+                "isCrorrect": int(isCrorrect)
+            })
+        theLogList.append(nowTime.__str__())
+        theLogList.append(": Mouse Clicks ")
+        theLogList.append(f"(x,y):({x},{y}), region: {regionIndex}")
+        if addTrack:
+            if int(isCrorrect) == 1:
+                theLogList.append(", Correct")
+            else:
+                theLogList.append(", Wrong")
+        self.list2LogFile(theLogList)
+
     def logSomething(self, content):
         """
         通用日志写入
@@ -79,27 +104,45 @@ class Logger:
         theLogList = [self.getCurTime(), str(content)]
         self.list2LogFile(theLogList)
 
-    def getTestAcc(self):
+    def getTestAcc(self, select):
         """
         计算测试正确率
+        :param select: 计算哪种类型的正确率 str: "key" or "mouse"
         :return: 正确率 float
         """
-        assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
-        return len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
+        assert select == "key" or select == "mouse", "getTestAcc function need parm select"
+        if select == "key":
+            assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            return len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
+        elif select == "mouse":
+            assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            return len([x for x in self.mouseClickInfoList if x['isCrorrect'] == 1]) / len(self.mouseClickInfoList)
 
-    def getAvgActTime(self):
+    def getAvgActTime(self, select):
         """
         计算测试平均反应时间
+        :param select: 计算哪种类型的正确率 str: "key" or "mouse"
         :return: 平均反应时间 datetime.datetime
         """
-        assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
-        avgTime = None
-        for i in range(len(self.imgShowInfoList)):
-            if avgTime is not None:
-                avgTime = avgTime + (self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
-            else:
-                avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
-        return avgTime / len(self.imgShowInfoList)
+        assert select == "key" or select == "mouse", "getAvgActTime function need parm select"
+        if select == "key":
+            assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            avgTime = None
+            for i in range(len(self.imgShowInfoList)):
+                if avgTime is not None:
+                    avgTime = avgTime + (self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
+                else:
+                    avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
+            return avgTime / len(self.imgShowInfoList)
+        else:
+            assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            avgTime = None
+            for i in range(len(self.imgShowInfoList)):
+                if avgTime is not None:
+                    avgTime = avgTime + (self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
+                else:
+                    avgTime = self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time']
+            return avgTime / len(self.imgShowInfoList)
 
     def list2LogFile(self, logList, endWith='\n'):
         """
