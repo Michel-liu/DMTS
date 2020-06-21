@@ -1,11 +1,8 @@
 import datetime
 import time
 import math
-import config
 from PIL import Image, ImageTk
-from config import *
-
-from gui import imgLabel, MaxWidth, MaxHeight
+from gui import canvas
 
 
 class Logger:
@@ -177,51 +174,53 @@ class Logger:
 
 
 def handlerAdaptor(fun, **kwds):
+    """
+    用于给函数作为参数时传参是使用
+    :param fun: 函数对象
+    :param kwds: 函数的参数
+    :return 无
+    """
     return lambda event, fun=fun, kwds=kwds: fun(event, **kwds)
 
 
-def callback(event, path, maxw, maxh):
+def callback(event):
     """
     处理鼠标左键点击事件
-    :param maxw:
-    :param path:
+    :param maxw:图像宽度
+    :param path:图像高度
+    :param event:鼠标点击事件对象
+    :return:无
+    """
+    print(event.char)
+
+
+def callbackStart(event, maxw, maxh):
+    """
+
     :param event:
     :return:
     """
-    print(event.x, event.y)
+    photo = loadPic(r'./img/1_16.png', maxw, maxh)
     label = event.widget
-    photo = loadPic(path, maxw, maxh)
     label.configure(image=photo)
-
-def callbackStart(event,maxw,maxh):
-    """
-
-    :param event:
-    :return:
-    """
-    photo = loadPic(r'./img/1_16.png',maxw,maxh)
-    label = event.widget
-    label.configure(image = photo)
     # 十字显示500ms
     time.sleep(0.5)
     # 随机显示四个图片
-    photo = loadPic(r'./img/5.png',maxw,maxh)
-    label.configure(image = photo)
+    photo = loadPic(r'./img/5.png', maxw, maxh)
+    label.configure(image=photo)
     time.sleep(1)
 
-    photo = loadPic(r'./img/9.png',maxw,maxh)
-    label.configure(image = photo)
+    photo = loadPic(r'./img/9.png', maxw, maxh)
+    label.configure(image=photo)
     time.sleep(1)
 
-    photo = loadPic(r'./img/13.png',maxw,maxh)
-    label.configure(image = photo)
+    photo = loadPic(r'./img/13.png', maxw, maxh)
+    label.configure(image=photo)
     time.sleep(1)
 
-    photo = loadPic(r'./img/2.png',maxw,maxh)
-    label.configure(image = photo)
+    photo = loadPic(r'./img/2.png', maxw, maxh)
+    label.configure(image=photo)
     time.sleep(1)
-
-
 
 
 def resize(w, h, w_box, h_box, pil_image):
@@ -268,7 +267,11 @@ def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
 
     return yIndex * xRegionCount + xIndex
 
-if __name__ == '__main__':
+
+
+
+
+# if __name__ == '__main__':
     # logger = Logger()
     # logger.logImgShow(1, True)
     # time.sleep(0.5)
@@ -280,4 +283,4 @@ if __name__ == '__main__':
     # logger.closeFile()
     # print(logger.getTestAcc())
     # print(logger.getAvgActTime())
-    print(whereIAm(100,100,99,99))
+    # print(whereIAm(100, 100, 99, 99))
