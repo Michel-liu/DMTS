@@ -1,5 +1,6 @@
 import datetime
 import time
+import math
 import config
 from PIL import Image, ImageTk
 from config import *
@@ -20,6 +21,7 @@ class Logger:
         """
         self.imgShowInfoList = []
         self.keyPressInfoList = []
+        self.mouseClickInfoList = []
 
         self.logFileString = open(saveFilePath, 'w')
 
@@ -69,6 +71,30 @@ class Logger:
                 theLogList.append(", Wrong")
         self.list2LogFile(theLogList)
 
+    def logMouseClick(self, x, y, regionIndex, addTrack=False, isCrorrect=''):
+        theLogList = []
+        nowTime = self.getCurTime(False)
+        if addTrack:
+            assert isCrorrect != '', "logMouseClick function needs the parm 'isCrorrect'!"
+            self.mouseClickInfoList.append({
+                "time": nowTime,
+                "position": {
+                    "x": x,
+                    "y": y,
+                    "region": regionIndex
+                },
+                "isCrorrect": int(isCrorrect)
+            })
+        theLogList.append(nowTime.__str__())
+        theLogList.append(": Mouse Clicks ")
+        theLogList.append(f"(x,y):({x},{y}), region: {regionIndex}")
+        if addTrack:
+            if int(isCrorrect) == 1:
+                theLogList.append(", Correct")
+            else:
+                theLogList.append(", Wrong")
+        self.list2LogFile(theLogList)
+
     def logSomething(self, content):
         """
         通用日志写入
@@ -78,27 +104,45 @@ class Logger:
         theLogList = [self.getCurTime(), str(content)]
         self.list2LogFile(theLogList)
 
-    def getTestAcc(self):
+    def getTestAcc(self, select):
         """
         计算测试正确率
+        :param select: 计算哪种类型的正确率 str: "key" or "mouse"
         :return: 正确率 float
         """
-        assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
-        return len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
+        assert select == "key" or select == "mouse", "getTestAcc function need parm select"
+        if select == "key":
+            assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            return len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
+        elif select == "mouse":
+            assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            return len([x for x in self.mouseClickInfoList if x['isCrorrect'] == 1]) / len(self.mouseClickInfoList)
 
-    def getAvgActTime(self):
+    def getAvgActTime(self, select):
         """
         计算测试平均反应时间
+        :param select: 计算哪种类型的正确率 str: "key" or "mouse"
         :return: 平均反应时间 datetime.datetime
         """
-        assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
-        avgTime = None
-        for i in range(len(self.imgShowInfoList)):
-            if avgTime is not None:
-                avgTime = avgTime + (self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
-            else:
-                avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
-        return avgTime / len(self.imgShowInfoList)
+        assert select == "key" or select == "mouse", "getAvgActTime function need parm select"
+        if select == "key":
+            assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            avgTime = None
+            for i in range(len(self.imgShowInfoList)):
+                if avgTime is not None:
+                    avgTime = avgTime + (self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
+                else:
+                    avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
+            return avgTime / len(self.imgShowInfoList)
+        else:
+            assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            avgTime = None
+            for i in range(len(self.imgShowInfoList)):
+                if avgTime is not None:
+                    avgTime = avgTime + (self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
+                else:
+                    avgTime = self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time']
+            return avgTime / len(self.imgShowInfoList)
 
     def list2LogFile(self, logList, endWith='\n'):
         """
@@ -204,15 +248,36 @@ def loadPic(path, maxh, maxw):
     return photo
 
 
+def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
+    """
+    点击位置判断函数
+    :param h:窗口高度
+    :param w:窗口宽度
+    :param x: 鼠标点击 x坐标
+    :param y: 鼠标点击 y坐标
+    :param xRegionCount: 区域横向被均分的个数 默认4
+    :param yRegionCount: 区域纵向被均分的个数 默认4
+    :return: 区域编码 范围 0 - (xRegionCount * yRegionCount - 1) 由左至右, 由上到下
+    """
+    assert x <= w and y <= h, "超出区域限制范围, 检查输入"
+    mini_h = round(h / yRegionCount)
+    mini_w = round(w / xRegionCount)
+
+    xIndex = math.floor(x / mini_w)
+    yIndex = math.floor(y / mini_h)
+
+    return yIndex * xRegionCount + xIndex
+
 if __name__ == '__main__':
-    logger = Logger()
-    logger.logImgShow(1, True)
-    time.sleep(0.5)
-    logger.logPressKey('m', True, '1')
-    time.sleep(1)
-    logger.logImgShow(2, True)
-    time.sleep(0.5)
-    logger.logPressKey('c', True, '0')
-    logger.closeFile()
-    print(logger.getTestAcc())
-    print(logger.getAvgActTime())
+    # logger = Logger()
+    # logger.logImgShow(1, True)
+    # time.sleep(0.5)
+    # logger.logPressKey('m', True, '1')
+    # time.sleep(1)
+    # logger.logImgShow(2, True)
+    # time.sleep(0.5)
+    # logger.logPressKey('c', True, '0')
+    # logger.closeFile()
+    # print(logger.getTestAcc())
+    # print(logger.getAvgActTime())
+    print(whereIAm(100,100,99,99))
