@@ -2,7 +2,7 @@ import datetime
 import time
 import math
 from PIL import Image, ImageTk
-from gui import canvas
+from gui import canvas,balance
 
 
 class Logger:
@@ -191,8 +191,9 @@ def callback(event):
     :param event:鼠标点击事件对象
     :return:无
     """
-    # canvs.focus_set()
     print(event.char)
+
+    return event.char
 
 
 def callbackStart(event, maxw, maxh):
