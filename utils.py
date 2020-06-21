@@ -191,6 +191,7 @@ def callback(event):
     :param event:鼠标点击事件对象
     :return:无
     """
+    # canvs.focus_set()
     print(event.char)
 
 
