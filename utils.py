@@ -1,5 +1,6 @@
 import datetime
 import time
+import math
 import config
 from PIL import Image, ImageTk
 from config import *
@@ -204,15 +205,36 @@ def loadPic(path, maxh, maxw):
     return photo
 
 
+def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
+    """
+    点击位置判断函数
+    :param h:窗口高度
+    :param w:窗口宽度
+    :param x: 鼠标点击 x坐标
+    :param y: 鼠标点击 y坐标
+    :param xRegionCount: 区域横向被均分的个数 默认4
+    :param yRegionCount: 区域纵向被均分的个数 默认4
+    :return: 区域编码 范围 0 - (xRegionCount * yRegionCount - 1) 由左至右, 由上到下
+    """
+    assert x <= w and y <= h, "超出区域限制范围, 检查输入"
+    mini_h = round(h / yRegionCount)
+    mini_w = round(w / xRegionCount)
+
+    xIndex = math.floor(x / mini_w)
+    yIndex = math.floor(y / mini_h)
+
+    return yIndex * xRegionCount + xIndex
+
 if __name__ == '__main__':
-    logger = Logger()
-    logger.logImgShow(1, True)
-    time.sleep(0.5)
-    logger.logPressKey('m', True, '1')
-    time.sleep(1)
-    logger.logImgShow(2, True)
-    time.sleep(0.5)
-    logger.logPressKey('c', True, '0')
-    logger.closeFile()
-    print(logger.getTestAcc())
-    print(logger.getAvgActTime())
+    # logger = Logger()
+    # logger.logImgShow(1, True)
+    # time.sleep(0.5)
+    # logger.logPressKey('m', True, '1')
+    # time.sleep(1)
+    # logger.logImgShow(2, True)
+    # time.sleep(0.5)
+    # logger.logPressKey('c', True, '0')
+    # logger.closeFile()
+    # print(logger.getTestAcc())
+    # print(logger.getAvgActTime())
+    print(whereIAm(100,100,99,99))
