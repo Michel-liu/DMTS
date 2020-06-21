@@ -1,6 +1,8 @@
 import datetime
 import time
 import math
+import random
+import config
 from PIL import Image, ImageTk
 from gui import canvas,balance
 
@@ -271,10 +273,21 @@ def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
 
 
 
-
+# if __name__ == '__main__':
+def creatTestDataset(showList):
+    """
+    生成测试集随机序号列表,
+    :param showList: 之前展示的图像序号 范围[0, 15], 共4个
+    :return: 随机列表, 包含相同1张, 不同3张
+    """
+    saveIndex = random.randint(0, len(showList)-1)
+    for i in [x for x in range(4) if x != saveIndex]:
+        leftChoices = [t for t in range(16) if t != showList[i]]
+        showList[i] = random.choice(leftChoices)
+    return showList
 
 # if __name__ == '__main__':
-    # logger = Logger()
+# logger = Logger()
     # logger.logImgShow(1, True)
     # time.sleep(0.5)
     # logger.logPressKey('m', True, '1')
