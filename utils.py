@@ -284,7 +284,7 @@ def creatTestDataset(showList):
     for i in [x for x in range(4) if x != saveIndex]:
         leftChoices = [t for t in range(16) if t != showList[i]]
         showList[i] = random.choice(leftChoices)
-    return showList
+    return showList,saveIndex
 
 # if __name__ == '__main__':
 # logger = Logger()
