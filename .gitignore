@@ -5,6 +5,8 @@ __pycache__/
 
 # C extensions
 *.so
+.gitignore
+.DS_Store
 
 # Distribution / packaging
 .Python
@@ -41,6 +43,9 @@ pip-delete-this-directory.txt
 htmlcov/
 .tox/
 .nox/
+.gitignore
+.idea
+img
 .coverage
 .coverage.*
 .cache
