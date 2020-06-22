@@ -5,6 +5,7 @@ from tkinter.messagebox import showinfo,askyesno
 import random
 
 balance = None
+balanceShow = None
 canvas = None
 GroundTrue = True
 root = None
@@ -34,11 +35,13 @@ def RandomShow(w, h, im):
     """
     randInts = []
     lastInt = -1
-    for _ in range(4):
+    while True:
         currentInt = random.randint(0,15)
         if currentInt != lastInt:
             randInts.append(currentInt)
             lastInt = currentInt
+        if len(randInts)==4:
+            break
     randPaths = ['./img/' + str(x) + '.png' for x in randInts]
     for path in randPaths: canvasChangePic(im, path, w, h, 1)
     print(randInts)
@@ -56,8 +59,12 @@ def TestDelayPosition(w,h,im,rightInt):
     global GroundTrue
     randInts,TrueIndex = creatTestDataset(rightInt)
     randPaths = ['./img/' + str(x) + '.png' for x in randInts]
-    for path in randPaths:
+    for i,path in enumerate(randPaths):
         canvasChangePic(im, path, w, h, 1)
+        if i == TrueIndex:
+            GroundTrue = True
+        else:
+            GroundTrue = False
         canvas.wait_variable(balance)
     print(randInts)
     return randInts
@@ -69,28 +76,33 @@ def waitSpace(event):
 def waitConfirm(event):
     global balance
     global GroundTrue
-    print()
+    global balanceShow
     if event.char == ' ':
-        balance = IntVar(root,1,name = "space")
+        balance = IntVar(root1,1,name = "balance")
+        balanceShow = 1
         return
-    if balance.get()==0:
-        balance = IntVar(root1,1,name = "space")
-    elif balance.get() == 1:
-        balance = IntVar(root1, 0, name="space")
-    if (event.char == 'm' and GroundTrue == True) or (event.char == 'c' and GroundTrue == False):
-        pass
-    else:
-        pass
-
+    if event.char in ['m','c']:
+        if balanceShow==0:
+            balance = IntVar(root1,1,name = "balance")
+            balanceShow = 1
+        elif balanceShow == 1:
+            balance = IntVar(root1, 0, name="balance")
+            balanceShow = 0
+        if (event.char == 'm' and GroundTrue == True) or (event.char == 'c' and GroundTrue == False):
+            pass
+        else:
+            pass
 
 
 def Step1():
     global canvas
     global root1
     global balance
+    global balanceShow
     # root1 = Toplevel()
     root1 = Tk()
-    balance = IntVar(root,0,name = "space")
+    balance = IntVar(root1,0,name = "balance")
+    balanceShow = 0
     MaxWidth = root1.winfo_screenwidth() # 设置窗口最大宽度为屏幕宽度
     MaxHeight = root1.winfo_screenheight() - 10
     root1.title("DMS测试")
@@ -104,10 +116,7 @@ def Step1():
     root1.update()
     canvas.focus_set()
     canvas.bind("<Key>",waitConfirm)
-    canvas.wait_variable(balance)
-    # while balance==0:
-    #     time.sleep(0.3)
-    # time.sleep(2)
+    root1.wait_variable(balance)
     # 给出测试提示
     canvasChangePic(im,r'img/delay_recognition_location.png',MaxHeight,MaxHeight,3)
     ####################
@@ -130,6 +139,7 @@ def Step1():
     root1.mainloop()
 
 def main():
+    global root
     root = Tk()
     root.title("DMS测试系统")
     root.geometry('500x250')
@@ -140,8 +150,8 @@ def main():
     button1 = Button(frame,text = "延迟识别-位置",width = 30,height = 3,command = Step1).pack()
     button2 = Button(frame,text = "延迟识别-语言",width = 30,height = 3).pack()
     button3 = Button(frame,text = "延迟回忆-位置",width = 30,height = 3).pack()
-    button4 = Button(frame,text = "联系程序",width = 30,height = 3).pack()
-    askyesno("是否出现过","test")
+    button4 = Button(frame,text = "练习程序",width = 30,height = 3).pack()
+    # button5 = Button(frame,text = "退出程序",width = 15,height = 2,command = close_window).pack()
 
 
     root.mainloop()
