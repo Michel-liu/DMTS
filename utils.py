@@ -272,7 +272,7 @@ def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
 
 
 # if __name__ == '__main__':
-def creatTestDataset(showList):
+def creatTestDataset(showList, total_num=16):
     """
     生成测试集随机序号列表,
     :param showList: 之前展示的图像序号 范围[0, 15], 共4个
@@ -280,7 +280,7 @@ def creatTestDataset(showList):
     """
     saveIndex = random.randint(0, len(showList)-1)
     for i in [x for x in range(4) if x != saveIndex]:
-        leftChoices = [t for t in range(16) if t != showList[i]]
+        leftChoices = [t for t in range(total_num) if t != showList[i]]
         showList[i] = random.choice(leftChoices)
     return showList,saveIndex
 
