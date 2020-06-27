@@ -269,9 +269,18 @@ def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
 
     return yIndex * xRegionCount + xIndex
 
+def createShowDataset(total_num=16, need_len=4):
+    randInts = []
+    lastInt = -1
+    while True:
+        currentInt = random.randint(0, total_num-1)
+        if currentInt != lastInt:
+            randInts.append(currentInt)
+            lastInt = currentInt
+        if len(randInts) == need_len:
+            break
+    return randInts
 
-
-# if __name__ == '__main__':
 def creatTestDataset(showList, total_num=16):
     """
     生成测试集随机序号列表,
