@@ -2,10 +2,7 @@ import datetime
 import time
 import math
 import random
-import config
 from PIL import Image, ImageTk
-from gui import canvas,balance
-import sys
 
 
 class Logger:
