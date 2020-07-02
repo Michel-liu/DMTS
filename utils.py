@@ -260,10 +260,12 @@ def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
     :param yRegionCount: 区域纵向被均分的个数 默认4
     :return: 区域编码 范围 0 - (xRegionCount * yRegionCount - 1) 由左至右, 由上到下
     """
-    assert x <= w and y <= h, "超出区域限制范围, 检查输入"
+    w = w - (w - h ) / 2
+    x = x - (w - h ) / 2
+    if not (x <= h):
+        return -1
     mini_h = round(h / yRegionCount)
     mini_w = round(w / xRegionCount)
-
     xIndex = math.floor(x / mini_w)
     yIndex = math.floor(y / mini_h)
 
