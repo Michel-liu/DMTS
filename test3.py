@@ -66,19 +66,21 @@ class mainProcess:
         # 等待鼠标点击
         if event.type == "2":
             if event.char == ' ' and self.controlVal[PRACTICE]['state'] == 0:
-                self.controlVal[PRACTICE]['state'] = 1
+                # self.controlVal[PRACTICE]['state'] = 1
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 1, name="PRACTICE")
                 self.controlVal[PRACTICE]['value'] = 1
-        if event.type == "4":
-        # if self.controlVal[PRACTICE]['state'] == 1:
+        if event.type == "4" and self.controlVal[PRACTICE]['state'] == 1:
+            print("CLick in")
             self.USETCHOICE = whereIAm(self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_WIDTH, event.x, event.y)
-            if self.USETCHOICE < 0:
-                return
+            # if self.USETCHOICE < 0:
+            #     return
+            print(self.USETCHOICE)
+
             if self.controlVal[PRACTICE]['value'] == 0:
-                self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
+                self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="PRACTICE")
                 self.controlVal[PRACTICE]['value'] = 1
             elif self.controlVal[PRACTICE]['value'] == 1:
-                self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 0, name="REALTEST")
+                self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 0, name="PRACTICE")
                 self.controlVal[PRACTICE]['value'] = 0
 
             if self.USETCHOICE == self.CURRENTINDEX:
@@ -116,15 +118,15 @@ class mainProcess:
         randInts, TrueIndex = creatTestDataset(rightInts)
         randPaths = ['./src/test3/' + str(x) + '.png' for x in randInts]
         print(rightInts)
+        messagebox.showinfo("OK","OK")
         for i, path in enumerate(randPaths):
             path = './src/globle/black.png'
             self.canvasChangePic(imHandler, path, imgWidth, imgHeight, 1, choice, theCanva)
             self.CURRENTINDEX = rightInts[i]
-            # if i == TrueIndex:
-            #     self.CURRENTTRUE = True
-            # else:
-            #     self.CURRENTTRUE = False
+            self.controlVal[PRACTICE]['state'] = 1
             theCanva[0].wait_variable(self.controlVal[choice]['IntVar'])
+            self.controlVal[PRACTICE]['state'] = 0
+            print("Load pic")
             newPath = './src/test3/' + str(self.USETCHOICE) + '.png'
             self.canvasChangePic(imHandler, newPath, imgWidth, imgHeight, 0.5, choice, theCanva)
 
@@ -161,13 +163,12 @@ class mainProcess:
         self.showScreen[PRACTICE].update()
         mainCanvas[0].focus_set()
         mainCanvas[0].bind_all("<Key>", self.waitPracticeClick)
+        mainCanvas[0].bind_all("<Button-1>", self.waitPracticeClick)
         self.showScreen[PRACTICE].wait_variable(self.controlVal[PRACTICE]['IntVar'])
         self.canvasChangePic(imPractice, './src/test3/delay_recover_location.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 3, PRACTICE, mainCanvas)
         # ####################
         # # 延迟识别-位置
         # ###################
-        mainCanvas[0].focus_set()
-        mainCanvas[0].bind_all("<Button-1>", self.waitPracticeClick)
         for _ in range(2):
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
