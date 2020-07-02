@@ -46,6 +46,7 @@ htmlcov/
 .gitignore
 .idea
 img
+src
 .coverage
 .coverage.*
 .cache

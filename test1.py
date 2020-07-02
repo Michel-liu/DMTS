@@ -71,8 +71,10 @@ class mainProcess:
             if (self.CURRENTTRUE is True and (event.char is 'm' or event.char is 'M')) or \
                     (self.CURRENTTRUE is False and (event.char is 'c' or event.char is 'C')):
                 print("正确！")
+                # todo 需要加入统计逻辑
             else:
                 print("错误！")
+                # todo 需要加入统计逻辑
 
     def canvasChangePic(self, imHandler, imgPath, imgWidth, imgHeight, sleepTime, choice, theCanvas):
         theCanvas = theCanvas[0]
@@ -82,11 +84,21 @@ class mainProcess:
         self.showScreen[choice].update()
         time.sleep(sleepTime)
 
+    def canvasChangePicTest(self, imHandler, imgPath, imgWidth, imgHeight, sleepTime, choice, theCanvas):
+        theCanvas = theCanvas[0]
+        photo = loadPic(imgPath, imgWidth, imgHeight)
+        offsetX = (self.SCREEN_WIDTH - self.SCREEN_HEIGHT * 9 // 10) / 2
+        offsetY = 0
+        theCanvas.create_image(offsetX, offsetY, image=photo, anchor="nw")
+        theCanvas.pack()
+        self.showScreen[choice].update()
+        # time.sleep(sleepTime)
+
     def testDelayPosition(self, imHandler, imgWidth, imgHeight, choice, theCanva, rightInts):
         randInts, TrueIndex = creatTestDataset(rightInts)
         randPaths = ['./src/globle/' + str(x) + '.png' for x in randInts]
         for i, path in enumerate(randPaths):
-            self.canvasChangePic(imHandler, path, imgWidth, imgHeight, 1, choice, theCanva)
+            self.canvasChangePicTest(imHandler, path, imgWidth, imgHeight, 1, choice, theCanva)
             if i == TrueIndex:
                 self.CURRENTTRUE = True
             else:
