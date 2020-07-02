@@ -3,6 +3,7 @@ import time
 import math
 import random
 from PIL import Image, ImageTk
+import os
 
 
 class Logger:
@@ -240,8 +241,12 @@ def resize(w, h, w_box, h_box, pil_image):
     height = int(h * factor)
     return pil_image.resize((width, height), Image.ANTIALIAS)
 
+img = None
+photo = None
 
 def loadPic(path, maxh, maxw):
+    global img
+    global photo
     img = Image.open(path)
     w, h = img.size
     img_resize = resize(h, w, maxh, maxw, img)
@@ -260,6 +265,8 @@ def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
     :param yRegionCount: 区域纵向被均分的个数 默认4
     :return: 区域编码 范围 0 - (xRegionCount * yRegionCount - 1) 由左至右, 由上到下
     """
+    w = w - (w-h)//2
+    x = x - (w-h)//2
     assert x <= w and y <= h, "超出区域限制范围, 检查输入"
     mini_h = round(h / yRegionCount)
     mini_w = round(w / xRegionCount)
@@ -293,17 +300,37 @@ def creatTestDataset(showList, total_num=16):
         showList[i] = random.choice(leftChoices)
     return showList,saveIndex
 
+class test4DatasetControl:
+    def __init__(self, type_name=None):
+        if type_name is None:
+            type_name = ['green', 'red']
+        self.type_name = type_name
+        self.showPath = []
+        self.mini_batch = None
+        self.total_epoch = None
 
-# if __name__ == '__main__':
-# logger = Logger()
-    # logger.logImgShow(1, True)
-    # time.sleep(0.5)
-    # logger.logPressKey('m', True, '1')
-    # time.sleep(1)
-    # logger.logImgShow(2, True)
-    # time.sleep(0.5)
-    # logger.logPressKey('c', True, '0')
-    # logger.closeFile()
-    # print(logger.getTestAcc())
-    # print(logger.getAvgActTime())
-    # print(whereIAm(100, 100, 99, 99))
+    def creatTest4Dataset(self, epoch, mini_bach):
+        total_num = epoch * mini_bach
+        return createShowDataset(16, total_num)
+
+    def creatShowDataset(self, total_epoch, mini_bach):
+        assert total_epoch % len(self.type_name) == 0, "creatShowDataset % must be 0"
+        self.mini_batch = mini_bach
+        self.total_epoch = total_epoch
+        for name in self.type_name:
+            tList = self.creatTest4Dataset(total_epoch//len(self.type_name), mini_bach)
+            tList = list(map(lambda x: os.path.join(name, str(x)+'.png'), tList))
+            self.showPath = self.showPath + tList
+        assert len(self.showPath) % 4 == 0, "show list % 4 must be 0"
+        random.shuffle(self.showPath)
+        return self.showPath
+
+
+    def getShowDatesetByIndex(self, index):
+        assert index <= self.total_epoch, "getShowDatesetByIndex: index must <= total_epoch"
+        return
+
+
+if __name__ == '__main__':
+    test = test4DatasetControl()
+    print(test.creatShowDataset(2,2))
