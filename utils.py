@@ -292,11 +292,12 @@ def creatTestDataset(showList, total_num=16):
     :param showList: 之前展示的图像序号 范围[0, 15], 共4个
     :return: 随机列表, 包含相同1张, 不同3张
     """
-    saveIndex = random.randint(0, len(showList)-1)
+    showList_ = showList.copy()
+    saveIndex = random.randint(0, len(showList_)-1)
     for i in [x for x in range(4) if x != saveIndex]:
-        leftChoices = [t for t in range(total_num) if t != showList[i]]
-        showList[i] = random.choice(leftChoices)
-    return showList,saveIndex
+        leftChoices = [t for t in range(total_num) if t != showList_[i]]
+        showList_[i] = random.choice(leftChoices)
+    return showList_,saveIndex
 
 class test4DatasetControl:
     def __init__(self, type_name=None):
