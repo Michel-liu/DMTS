@@ -130,10 +130,10 @@ class mainProcess:
             path = './src/globle/black.png'
             self.canvasChangePic(imHandler, path, imgWidth, imgHeight, 1, choice, theCanva)
             self.CURRENTINDEX = rightInts[i]
-            self.controlVal[PRACTICE]['state'] = 1
+            self.controlVal[choice]['state'] = 1
             print("134")
             theCanva[0].wait_variable(self.controlVal[choice]['IntVar'])
-            self.controlVal[PRACTICE]['state'] = 0
+            self.controlVal[choice]['state'] = 0
             print("Load pic")
             newPath = './src/test3/' + str(self.USETCHOICE) + '.png'
             self.canvasChangePic(imHandler, newPath, imgWidth, imgHeight, 0.2, choice, theCanva)
@@ -221,7 +221,7 @@ class mainProcess:
         imPractice = mainCanvas[0].create_image(offsetX, offsetY, image=photo, anchor="nw")
         mainCanvas[0].pack()
         buttonCanvas.pack()
-        self.showScreen[PRACTICE].update()
+        self.showScreen[REALTEST].update()
         mainCanvas[0].focus_set()
         mainCanvas[0].bind_all("<Key>", self.waitRealTestClick)
         mainCanvas[0].bind_all("<Button-1>", self.waitRealTestClick)
@@ -249,7 +249,7 @@ class mainProcess:
                                    mainCanvas, rightInts)
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(REALTEST)
-        self.showScreen[PRACTICE].mainloop()
+        self.showScreen[REALTEST].mainloop()
 
 def Entrance():
     master = Tk()
