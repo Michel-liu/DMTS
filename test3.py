@@ -185,9 +185,9 @@ class mainProcess:
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
                                         PRACTICE, mainCanvas)
             # # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic(imPractice, './img/white.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, './src/globle/white.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
-            self.canvasChangePic(imPractice, './img/black.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, './src/globle/black.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 3, PRACTICE, mainCanvas)
             # 4. 测试阶段
             mainCanvas[0].pack()
@@ -238,9 +238,9 @@ class mainProcess:
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
                                         REALTEST, mainCanvas)
             # # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic(imPractice, './img/white.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, './src/globle/white.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
-            self.canvasChangePic(imPractice, './img/black.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, './src/globle/black.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
             # 4. 测试阶段
             mainCanvas[0].pack()
