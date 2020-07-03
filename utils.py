@@ -304,31 +304,52 @@ class test4DatasetControl:
             type_name = ['green', 'red']
         self.type_name = type_name
         self.showPath = []
+        self.testPath = []
+        self.allPath = []
         self.mini_batch = None
         self.total_epoch = None
+        for name in type_name:
+            for x in range(16):
+                self.allPath.append(os.path.join(name, str(x)+'.png'))
 
-    def creatTest4Dataset(self, epoch, mini_bach):
+    def createTest4Dataset(self, epoch, mini_bach):
         total_num = epoch * mini_bach
         return createShowDataset(16, total_num)
 
-    def creatShowDataset(self, total_epoch, mini_bach):
+    def createShowDataset(self, total_epoch, mini_bach):
         assert total_epoch % len(self.type_name) == 0, "creatShowDataset % must be 0"
         self.mini_batch = mini_bach
         self.total_epoch = total_epoch
         for name in self.type_name:
-            tList = self.creatTest4Dataset(total_epoch//len(self.type_name), mini_bach)
+            tList = self.createTest4Dataset(total_epoch//len(self.type_name), mini_bach)
             tList = list(map(lambda x: os.path.join(name, str(x)+'.png'), tList))
             self.showPath = self.showPath + tList
         assert len(self.showPath) % 4 == 0, "show list % 4 must be 0"
         random.shuffle(self.showPath)
         return self.showPath
 
+    def getShowDatasetByIndex(self, index):
+        assert index <= self.total_epoch, "getShowDatasetByIndex: index must <= total_epoch"
+        return self.showPath[index*(len(self.showPath)//self.total_epoch):(index + 1) * (len(self.showPath)//self.total_epoch)]
 
-    def getShowDatesetByIndex(self, index):
-        assert index <= self.total_epoch, "getShowDatesetByIndex: index must <= total_epoch"
-        return
+    def createTestDataset(self):
+        randIndexList = random.sample(range(len(self.showPath)), len(self.showPath)//4)
+        for i in range(len(self.showPath)):
+            if i in randIndexList:
+                self.testPath.append(self.showPath[i])
+            else:
+                self.testPath.append(random.choice([x for x in self.allPath if x != self.showPath[i]]))
+
+    def getTestDatasetByIndex(self, index):
+        assert index <= self.total_epoch, "getTestDatasetByIndex: index must <= total_epoch"
+        return self.testPath[index*(len(self.testPath)//self.total_epoch):(index + 1) * (len(self.testPath)//self.total_epoch)]
 
 
 if __name__ == '__main__':
     test = test4DatasetControl()
-    print(test.creatShowDataset(2,2))
+    test.createShowDataset(2,2)
+    print(test.getShowDatasetByIndex(0))
+    print(test.getShowDatasetByIndex(1))
+    test.createTestDataset()
+    print(test.getTestDatasetByIndex(0))
+    print(test.getTestDatasetByIndex(1))
