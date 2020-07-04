@@ -124,6 +124,7 @@ class mainProcess:
         return randInts
 
     def practice(self):
+        self.logger.logSomething("**********开始练习：延迟识别-言语**********")
         self.controlVal[PRACTICE]['state'] = 0
         self.CURRENTTRUE = False
         self.showScreen[PRACTICE].deiconify()
@@ -172,6 +173,7 @@ class mainProcess:
         self.showScreen[PRACTICE].mainloop()
 
     def realTest(self):
+        self.logger.logSomething("**********开始测试：延迟识别-言语**********")
         self.controlVal[REALTEST]['state'] = 0
         self.CURRENTTRUE = False
 

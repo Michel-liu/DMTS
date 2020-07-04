@@ -20,7 +20,7 @@ class Logger:
         self.imgShowInfoList = []
         self.keyPressInfoList = []
         self.mouseClickInfoList = []
-        self.logFileString = open(self.getCurTime()[:-7] + '_' + saveFilePath, 'w')
+        self.logFileString = open((self.getCurTime()[:-7] + '_' + saveFilePath).replace(' ','-').replace(':','-'), 'w')
 
     def logImgShow(self, theImg, addTrack=False):
         """
