@@ -21,7 +21,8 @@ class mainProcess:
         self.SCREEN_HEIGHT = self.showScreen[PRACTICE].winfo_screenheight()
         self.CURRENTTRUE = False
         self.datasetControl = None
-        self.logger = Logger(saveFilePath="./test4.log")
+        self.logger = Logger(saveFilePath="test4.log")
+        self.LOCK = None
 
     def destroy(self, choice):
         self.showScreen[choice].destroy()
@@ -40,7 +41,8 @@ class mainProcess:
             self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 1, name="PRACTICE")
             self.controlVal[PRACTICE]['value'] = 1
             return
-        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[PRACTICE]['state'] == 1:
+        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[PRACTICE]['state'] == 1 and self.LOCK == False:
+            self.LOCK = True
             if self.controlVal[PRACTICE]['value'] == 0:
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 1, name="PRACTICE")
                 self.controlVal[PRACTICE]['value'] = 1
@@ -62,7 +64,8 @@ class mainProcess:
             self.controlVal[REALTEST]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
             self.controlVal[REALTEST]['value'] = 1
             return
-        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[REALTEST]['state'] == 1:
+        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[REALTEST]['state'] == 1 and self.LOCK == False:
+            self.LOCK = True
             if self.controlVal[PRACTICE]['value'] == 0:
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
                 self.controlVal[PRACTICE]['value'] = 1
@@ -106,8 +109,9 @@ class mainProcess:
                 self.CURRENTTRUE = True
             else:
                 self.CURRENTTRUE = False
+            self.LOCK = False
             theCanva[0].wait_variable(self.controlVal[choice]['IntVar'])
-            self.canvasChangePic(imHandler, './src/test4/block.png', imgWidth, imgHeight, 0.1, choice, theCanva)
+            self.canvasChangePic(imHandler, './src/test4/block.png', imgWidth, imgHeight, 0.05, choice, theCanva)
         self.logger.logSomething("\n", addTime=False)
 
     def RandomShow(self, imHandler, imgWidth, imgHeight, choice, theCanvas, epoch):
@@ -165,7 +169,22 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, rightInts, _)
 
+        acc1 = self.logger.getTestAcc(select='key')
+        self.logger.getAvgActTime(select='key')
+        self.logger.logSomething("\n",False)
+        if acc1 < 0.85:
+            self.logger.logFileString.flush()
+            messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+            self.destroy(PRACTICE)
+            self.showScreen[PRACTICE].mainloop()
+
+        self.logger.logFileString.flush()
+        self.logger.imgShowInfoList = []
+        self.logger.keyPressInfoList = []
+        self.logger.mouseClickInfoList = []
+
         # todo 其他负荷
+        self.logger.logSomething("********************", False)
         messagebox.showinfo("负荷3", "负荷3,本轮测试共4轮！")
         self.datasetControl = test4DatasetControl()
         self.datasetControl.createShowDataset(4, 3)
@@ -188,6 +207,19 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
                                    mainCanvas, rightInts, _)
 
+        acc1 = self.logger.getTestAcc(select='key')
+        self.logger.getAvgActTime(select='key')
+        if acc1 < 0.85:
+            self.logger.logFileString.flush()
+            messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+            self.destroy(PRACTICE)
+            self.showScreen[PRACTICE].mainloop()
+        self.logger.logSomething("\n",False)
+        self.logger.logFileString.flush()
+        self.logger.imgShowInfoList = []
+        self.logger.keyPressInfoList = []
+        self.logger.mouseClickInfoList = []
+        self.logger.logSomething("********************", False)
         messagebox.showinfo("负荷4", "负荷4,本轮测试共2轮！")
         self.datasetControl = test4DatasetControl()
         self.datasetControl.createShowDataset(2, 4)
@@ -209,7 +241,10 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
                                    mainCanvas, rightInts, _)
+        self.logger.getTestAcc(select='key')
+        self.logger.getAvgActTime(select='ley')
 
+        self.logger.logFileString.flush()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(PRACTICE)
         self.showScreen[PRACTICE].mainloop()
@@ -266,11 +301,25 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts, _)
-        # todo if acc 逻辑
+
+        acc1 = self.logger.getTestAcc(select='key')
+        self.logger.getAvgActTime(select='key')
+        if acc1 < 0.85:
+            self.logger.logFileString.flush()
+            messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+            self.destroy(PRACTICE)
+            self.showScreen[PRACTICE].mainloop()
+        self.logger.logSomething("\n", False)
+        self.logger.logFileString.flush()
+        self.logger.imgShowInfoList = []
+        self.logger.keyPressInfoList = []
+        self.logger.mouseClickInfoList = []
 
         self.datasetControl = test4DatasetControl()
         self.datasetControl.createShowDataset(20, 3)
         self.datasetControl.createTestDataset()
+        self.logger.logSomething("********************", False)
+
         for _ in range(20):
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
@@ -288,11 +337,26 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts, _)
-        # todo if acc 逻辑
+
+        acc1 = self.logger.getTestAcc(select='key')
+        self.logger.getAvgActTime(select='key')
+        self.logger.logSomething("\n",False)
+        if acc1 < 0.85:
+            self.logger.logFileString.flush()
+            messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+            self.destroy(PRACTICE)
+            self.showScreen[PRACTICE].mainloop()
+
+        self.logger.logFileString.flush()
+        self.logger.imgShowInfoList = []
+        self.logger.keyPressInfoList = []
+        self.logger.mouseClickInfoList = []
 
         self.datasetControl = test4DatasetControl()
         self.datasetControl.createShowDataset(20, 4)
         self.datasetControl.createTestDataset()
+        self.logger.logSomething("********************", False)
+
         for _ in range(20):
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
@@ -313,7 +377,7 @@ class mainProcess:
 
         print(self.logger.getTestAcc(select="key"))
         print(self.logger.getAvgActTime(select="key"))
-        self.logger.closeFile()
+        self.logger.logFileString.flush()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(REALTEST)
         self.showScreen[REALTEST].mainloop()
@@ -332,6 +396,7 @@ def Entrance():
     button_2 = Button(master=frame, text="开始检测", width=30, height=4, command=mainprocess.realTest)
     button_2.pack()
     master.mainloop()
+    mainprocess.logger.logFileString.close()
 
 
 if __name__ == '__main__':

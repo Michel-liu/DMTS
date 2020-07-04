@@ -22,6 +22,7 @@ class mainProcess:
         self.SCREEN_HEIGHT = self.showScreen[PRACTICE].winfo_screenheight()
         self.logger = Logger(saveFilePath='test1.log')
         self.CURRENTTRUE = False
+        self.LOCK = None
 
     def destroy(self, choice):
         self.showScreen[choice].destroy()
@@ -40,7 +41,8 @@ class mainProcess:
             self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 1, name="PRACTICE")
             self.controlVal[PRACTICE]['value'] = 1
             return
-        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[PRACTICE]['state'] == 1:
+        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[PRACTICE]['state'] == 1 and self.LOCK == False:
+            self.LOCK = True
             if self.controlVal[PRACTICE]['value'] == 0:
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 1, name="PRACTICE")
                 self.controlVal[PRACTICE]['value'] = 1
@@ -62,7 +64,8 @@ class mainProcess:
             self.controlVal[REALTEST]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
             self.controlVal[REALTEST]['value'] = 1
             return
-        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[REALTEST]['state'] == 1:
+        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[REALTEST]['state'] == 1 and self.LOCK == False:
+            self.LOCK = True
             if self.controlVal[PRACTICE]['value'] == 0:
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
                 self.controlVal[PRACTICE]['value'] = 1
@@ -106,6 +109,7 @@ class mainProcess:
                 self.CURRENTTRUE = True
             else:
                 self.CURRENTTRUE = False
+            self.LOCK = False
             theCanva[0].wait_variable(self.controlVal[choice]['IntVar'])
             self.canvasChangePic(imHandler, './src/globle/black.png', imgWidth, imgHeight, 0.1, choice, theCanva)
         self.logger.logSomething("\n", addTime=False)
@@ -170,8 +174,8 @@ class mainProcess:
 
         print(self.logger.getTestAcc(select="key"))
         print(self.logger.getAvgActTime(select="key"))
-        self.logger.closeFile()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+        self.logger.logFileString.flush()
         self.destroy(PRACTICE)
         self.showScreen[PRACTICE].mainloop()
 
@@ -227,11 +231,13 @@ class mainProcess:
 
         print(self.logger.getTestAcc(select="key"))
         print(self.logger.getAvgActTime(select="key"))
-        self.logger.closeFile()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+        self.logger.logFileString.flush()
         self.destroy(REALTEST)
         self.showScreen[REALTEST].mainloop()
 
+    def close(self):
+        self.logger.closeFile()
 
 def Entrance():
     master = Tk()
@@ -247,6 +253,7 @@ def Entrance():
     button_2 = Button(master=frame, text="开始检测", width=30, height=4, command=mainprocess.realTest)
     button_2.pack()
     master.mainloop()
+    mainprocess.close()
 
 
 if __name__ == '__main__':

@@ -20,7 +20,7 @@ class Logger:
         self.imgShowInfoList = []
         self.keyPressInfoList = []
         self.mouseClickInfoList = []
-        self.logFileString = open(saveFilePath, 'w')
+        self.logFileString = open(self.getCurTime()[:-7] + '_' + saveFilePath, 'w')
 
     def logImgShow(self, theImg, addTrack=False):
         """
@@ -68,11 +68,16 @@ class Logger:
                 theLogList.append(", Wrong")
         self.list2LogFile(theLogList)
 
-    def logMouseClick(self, x, y, regionIndex, addTrack=False, isCrorrect=''):
+    def logMouseClick(self, x, y, regionIndex, addTrack=False, groundTrueRegion=None):
         theLogList = []
         nowTime = self.getCurTime(False)
+        isCrorrect = None
         if addTrack:
-            assert isCrorrect != '', "logMouseClick function needs the parm 'isCrorrect'!"
+            assert groundTrueRegion != None, "logMouseClick function needs the parm 'groundTrueRegion'!"
+            if groundTrueRegion == regionIndex:
+                isCrorrect = '1'
+            else:
+                isCrorrect = '0'
             self.mouseClickInfoList.append({
                 "time": nowTime,
                 "position": {
@@ -80,7 +85,8 @@ class Logger:
                     "y": y,
                     "region": regionIndex
                 },
-                "isCrorrect": int(isCrorrect)
+                "isCrorrect": int(isCrorrect),
+                "distence": getDistence(index2XY(regionIndex), index2XY(groundTrueRegion))
             })
         theLogList.append(nowTime.__str__())
         theLogList.append(": Mouse Clicks ")
@@ -88,8 +94,13 @@ class Logger:
         if addTrack:
             if int(isCrorrect) == 1:
                 theLogList.append(", Correct")
+                theLogList.append(f", Choose region: {regionIndex}")
+                theLogList.append(f", Distance: {self.mouseClickInfoList[-1]['distence']}")
+
             else:
                 theLogList.append(", Wrong")
+                theLogList.append(f", Choose region: {regionIndex}")
+                theLogList.append(f", Distance: {self.mouseClickInfoList[-1]['distence']}")
         self.list2LogFile(theLogList)
 
     def logSomething(self, content,addTime=True):
@@ -114,12 +125,14 @@ class Logger:
         if select == "key":
             assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
             acc = len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
-            self.logSomething("Acc: " + str(acc))
+            self.logSomething(" :Acc: " + str(acc))
             return acc
         elif select == "mouse":
             assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
             acc = len([x for x in self.mouseClickInfoList if x['isCrorrect'] == 1]) / len(self.mouseClickInfoList)
-            self.logSomething("Acc: " + str(acc))
+            distance = sum([x['distence'] for x in self.mouseClickInfoList]) / len(self.mouseClickInfoList)
+            self.logSomething(": Acc: " + str(acc))
+            self.logSomething(": Distance: " + str(distance))
             return acc
 
     def getAvgActTime(self, select):
@@ -138,7 +151,7 @@ class Logger:
                 else:
                     avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
             avgTime = avgTime / len(self.imgShowInfoList)
-            self.logSomething("AvgTime: " + str(avgTime))
+            self.logSomething(" :AvgTime: " + str(avgTime))
             return avgTime
         else:
             assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
@@ -149,7 +162,7 @@ class Logger:
                 else:
                     avgTime = self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time']
             avgTime = avgTime / len(self.imgShowInfoList)
-            self.logSomething("AvgTime: " + str(avgTime))
+            self.logSomething(": AvgTime: " + str(avgTime))
             return avgTime
 
     def list2LogFile(self, logList, endWith='\n'):
@@ -329,6 +342,12 @@ class test4DatasetControl:
             for x in range(16):
                 self.allPath.append(os.path.join(name, str(x) + '.png'))
 
+    def isSameBetween(self):
+        for i, item in enumerate(self.showPath[:-1]):
+            if item == self.showPath[i+1]:
+                return True
+        return False
+
     def createTest4Dataset(self, epoch, mini_bach):
         total_num = epoch * mini_bach
         return createShowDataset(16, total_num)
@@ -344,6 +363,9 @@ class test4DatasetControl:
             self.showPath = self.showPath + tList
         assert len(self.showPath) % 4 == 0, "show list % 4 must be 0"
         random.shuffle(self.showPath)
+        while self.isSameBetween():
+            random.shuffle(self.showPath)
+
         return self.showPath
 
     def getShowDatasetByIndex(self, index):
@@ -371,11 +393,24 @@ class test4DatasetControl:
 
         return self.testPath[index*(len(self.testPath)//self.total_epoch):(index + 1) * (len(self.testPath)//self.total_epoch)], rightList
 
+def getDistence(xy1, xy2):
+    x1 = xy1[0]
+    y1 = xy1[1]
+    x2 = xy2[0]
+    y2 = xy2[1]
+    return math.sqrt((x1-x2)**2 + (y1-y2)**2)
+
+def index2XY(index):
+    y = index // 4
+    x = index - 4 * y
+    return y, x
 
 if __name__ == '__main__':
+    # print(index2XY(15))
+    # log = Logger()
+    # log.logSomething("HHH",True)
     test = test4DatasetControl()
-    test.createShowDataset(2, 2)
-    test.createShowDataset(1,4)
+    test.createShowDataset(4, 4)
     print(test.getShowDatasetByIndex(0))
     print(test.getShowDatasetByIndex(1))
     test.createTestDataset()

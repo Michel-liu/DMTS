@@ -23,7 +23,8 @@ class mainProcess:
         self.CURRENTTRUE = False
         self.CURRENTINDEX = -1
         self.USETCHOICE = -1
-        self.logger = Logger(saveFilePath="./test3.log")
+        self.logger = Logger(saveFilePath="test3.log")
+        self.LOCK = None
 
     def destroy(self, choice):
         self.showScreen[choice].destroy()
@@ -36,33 +37,6 @@ class mainProcess:
             self.controlVal[choice]['IntVar'] = IntVar(self.showScreen[choice], 0, name="REALTEST")
         self.controlVal[choice]['value'] = 0
 
-    def waitSpace(self, event):
-        if event.char == ' ' and self.controlVal[PRACTICE]['state'] == 0:
-            self.controlVal[PRACTICE]['state'] = 1
-            self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 1, name="PRACTICE")
-            self.controlVal[PRACTICE]['value'] = 1
-            return
-
-    def waitRealTestConfirm(self, event):
-        if event.char == ' ' and self.controlVal[REALTEST]['state'] == 0:
-            self.controlVal[REALTEST]['state'] = 1
-            self.controlVal[REALTEST]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
-            self.controlVal[REALTEST]['value'] = 1
-            return
-        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[REALTEST]['state'] == 1:
-            if self.controlVal[PRACTICE]['value'] == 0:
-                self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
-                self.controlVal[PRACTICE]['value'] = 1
-            elif self.controlVal[PRACTICE]['value'] == 1:
-                self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 0, name="REALTEST")
-                self.controlVal[PRACTICE]['value'] = 0
-
-            if (self.CURRENTTRUE is True and (event.char is 'm' or event.char is 'M')) or \
-                    (self.CURRENTTRUE is False and (event.char is 'c' or event.char is 'C')):
-                print("正确！")
-            else:
-                print("错误！")
-
     def waitPracticeClick(self, event):
         # 等待鼠标点击
         if event.type == "2":
@@ -70,7 +44,8 @@ class mainProcess:
                 # self.controlVal[PRACTICE]['state'] = 1
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 1, name="PRACTICE")
                 self.controlVal[PRACTICE]['value'] = 1
-        if event.type == "4" and self.controlVal[PRACTICE]['state'] == 1:
+        if event.type == "4" and self.controlVal[PRACTICE]['state'] == 1 and self.LOCK == False:
+            self.LOCK = True
             print("CLick in")
             self.USETCHOICE = whereIAm(self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_WIDTH, event.x, event.y)
             if self.USETCHOICE < 0:
@@ -87,11 +62,13 @@ class mainProcess:
             if self.USETCHOICE == self.CURRENTINDEX:
                 print("正确！")
                 # self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='1')
-                self.logger.logMouseClick(event.x,event.y,self.CURRENTINDEX,addTrack=TRUE,isCrorrect='1')
+                self.logger.logMouseClick(event.x, event.y, self.USETCHOICE, addTrack=TRUE,
+                                          groundTrueRegion=self.CURRENTINDEX)
             else:
                 print("错误！")
                 # self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='0')
-                self.logger.logMouseClick(event.x,event.y,self.CURRENTINDEX,addTrack=TRUE,isCrorrect='0')
+                self.logger.logMouseClick(event.x, event.y, self.USETCHOICE, addTrack=TRUE,
+                                          groundTrueRegion=self.CURRENTINDEX)
 
     def waitRealTestClick(self, event):
         # 等待鼠标点击
@@ -100,7 +77,8 @@ class mainProcess:
                 # self.controlVal[PRACTICE]['state'] = 1
                 self.controlVal[REALTEST]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
                 self.controlVal[REALTEST]['value'] = 1
-        if event.type == "4" and self.controlVal[REALTEST]['state'] == 1:
+        if event.type == "4" and self.controlVal[REALTEST]['state'] == 1 and self.LOCK == False:
+            self.LOCK = True
             print("wait realtest button1 CLick in")
             self.USETCHOICE = whereIAm(self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_WIDTH, event.x, event.y)
             if self.USETCHOICE < 0:
@@ -115,11 +93,11 @@ class mainProcess:
             if self.USETCHOICE == self.CURRENTINDEX:
                 print("正确！")
                 # self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='1')
-                self.logger.logMouseClick(event.x,event.y,self.CURRENTINDEX,addTrack=TRUE,isCrorrect='1')
+                self.logger.logMouseClick(event.x, event.y, self.USETCHOICE, addTrack=TRUE, groundTrueRegion=self.CURRENTINDEX)
             else:
                 print("错误！")
                 # self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='0')
-                self.logger.logMouseClick(event.x,event.y,self.CURRENTINDEX,addTrack=TRUE,isCrorrect='0')
+                self.logger.logMouseClick(event.x, event.y, self.USETCHOICE, addTrack=TRUE, groundTrueRegion=self.CURRENTINDEX)
 
     def canvasChangePic(self, imHandler, imgPath, imgWidth, imgHeight, sleepTime, choice, theCanvas):
         theCanvas = theCanvas[0]
@@ -129,24 +107,31 @@ class mainProcess:
         self.showScreen[choice].update()
         time.sleep(sleepTime)
 
+    def canvasChangePicTest(self, imHandler, imgPath, imgWidth, imgHeight, sleepTime, choice, theCanvas):
+        theCanvas = theCanvas[0]
+        photo = loadPic(imgPath, imgWidth, imgHeight)
+        offsetX = (self.SCREEN_WIDTH - self.SCREEN_HEIGHT * 9 // 10) / 2
+        offsetY = 0
+        theCanvas.create_image(offsetX, offsetY, image=photo, anchor="nw")
+        theCanvas.pack()
+        self.showScreen[choice].update()
+        # time.sleep(sleepTime)
+
     def testDelayPosition(self, imHandler, imgWidth, imgHeight, choice, theCanva, rightInts):
         randInts, TrueIndex = creatTestDataset(rightInts)
         randPaths = ['./src/test3/' + str(x) + '.png' for x in randInts]
         print(rightInts)
         for i, path in enumerate(randPaths):
-            print("129")
             path = './src/globle/black.png'
-            self.canvasChangePic(imHandler, path, imgWidth, imgHeight, 1, choice, theCanva)
+            self.canvasChangePicTest(imHandler, path, imgWidth, imgHeight, 0, choice, theCanva)
+            self.logger.logImgShow(path, addTrack=True)
             self.CURRENTINDEX = rightInts[i]
             self.controlVal[choice]['state'] = 1
-            print("134")
+            self.LOCK = False
             theCanva[0].wait_variable(self.controlVal[choice]['IntVar'])
             self.controlVal[choice]['state'] = 0
-            print("Load pic")
             newPath = './src/test3/' + str(self.USETCHOICE) + '.png'
-            self.logger.logImgShow(newPath, addTrack=True)
-            self.canvasChangePic(imHandler, newPath, imgWidth, imgHeight, 0.2, choice, theCanva)
-            self.logger.logImgShow(path, addTrack=True)
+            self.canvasChangePic(imHandler, newPath, imgWidth, imgHeight, 0.1, choice, theCanva)
 
     def RandomShow(self, imHandler, imgWidth, imgHeight, choice, theCanvas):
         randInts = createShowDataset()
@@ -189,7 +174,7 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
-        for _ in range(8):
+        for _ in range(1):
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 2, PRACTICE, mainCanvas)
@@ -206,9 +191,9 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
                                    mainCanvas, rightInts)
-        print(self.logger.getTestAcc(select="key"))
-        print(self.logger.getAvgActTime(select="key"))
-        self.logger.closeFile()
+        print(self.logger.getTestAcc(select="mouse"))
+        print(self.logger.getAvgActTime(select="mouse"))
+        self.logger.logFileString.flush()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(PRACTICE)
         self.showScreen[PRACTICE].mainloop()
@@ -262,9 +247,9 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts)
-        print(self.logger.getTestAcc(select="key"))
-        print(self.logger.getAvgActTime(select="key"))
-        self.logger.closeFile()
+        print(self.logger.getTestAcc(select="mouse"))
+        print(self.logger.getAvgActTime(select="mouse"))
+        self.logger.logFileString.flush()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(REALTEST)
         self.showScreen[REALTEST].mainloop()
@@ -283,6 +268,7 @@ def Entrance():
     button_2 = Button(master=frame, text="开始检测", width=30, height=4, command=mainprocess.realTest)
     button_2.pack()
     master.mainloop()
+    mainprocess.logger.logFileString.close()
 
 
 if __name__ == '__main__':
