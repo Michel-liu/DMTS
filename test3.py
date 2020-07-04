@@ -124,7 +124,6 @@ class mainProcess:
         randInts, TrueIndex = creatTestDataset(rightInts)
         randPaths = ['./src/test3/' + str(x) + '.png' for x in randInts]
         print(rightInts)
-        messagebox.showinfo("OK","OK")
         for i, path in enumerate(randPaths):
             print("129")
             path = './src/globle/black.png'
