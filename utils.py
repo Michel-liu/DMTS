@@ -20,7 +20,6 @@ class Logger:
         self.imgShowInfoList = []
         self.keyPressInfoList = []
         self.mouseClickInfoList = []
-
         self.logFileString = open(saveFilePath, 'w')
 
     def logImgShow(self, theImg, addTrack=False):
@@ -93,13 +92,16 @@ class Logger:
                 theLogList.append(", Wrong")
         self.list2LogFile(theLogList)
 
-    def logSomething(self, content):
+    def logSomething(self, content,addTime=True):
         """
         通用日志写入
         :param content:写入的内容 (无需包含时间信息)
         :return: 无
         """
-        theLogList = [self.getCurTime(), str(content)]
+        if addTime:
+            theLogList = [self.getCurTime(), str(content)]
+        else:
+            theLogList = [str(content)]
         self.list2LogFile(theLogList)
 
     def getTestAcc(self, select):
@@ -111,10 +113,14 @@ class Logger:
         assert select == "key" or select == "mouse", "getTestAcc function need parm select"
         if select == "key":
             assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
-            return len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
+            acc = len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
+            self.logSomething("Acc: " + str(acc))
+            return acc
         elif select == "mouse":
             assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
-            return len([x for x in self.mouseClickInfoList if x['isCrorrect'] == 1]) / len(self.mouseClickInfoList)
+            acc = len([x for x in self.mouseClickInfoList if x['isCrorrect'] == 1]) / len(self.mouseClickInfoList)
+            self.logSomething("Acc: " + str(acc))
+            return acc
 
     def getAvgActTime(self, select):
         """
@@ -131,7 +137,9 @@ class Logger:
                     avgTime = avgTime + (self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
                 else:
                     avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
-            return avgTime / len(self.imgShowInfoList)
+            avgTime = avgTime / len(self.imgShowInfoList)
+            self.logSomething("AvgTime: " + str(avgTime))
+            return avgTime
         else:
             assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
             avgTime = None
@@ -140,7 +148,9 @@ class Logger:
                     avgTime = avgTime + (self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
                 else:
                     avgTime = self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time']
-            return avgTime / len(self.imgShowInfoList)
+            avgTime = avgTime / len(self.imgShowInfoList)
+            self.logSomething("AvgTime: " + str(avgTime))
+            return avgTime
 
     def list2LogFile(self, logList, endWith='\n'):
         """
@@ -241,8 +251,10 @@ def resize(w, h, w_box, h_box, pil_image):
     height = int(h * factor)
     return pil_image.resize((width, height), Image.ANTIALIAS)
 
+
 img = None
 photo = None
+
 
 def loadPic(path, maxh, maxw):
     global img
@@ -274,17 +286,19 @@ def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
 
     return yIndex * xRegionCount + xIndex
 
+
 def createShowDataset(total_num=16, need_len=4):
     randInts = []
     lastInt = -1
     while True:
-        currentInt = random.randint(0, total_num-1)
+        currentInt = random.randint(0, total_num - 1)
         if currentInt != lastInt:
             randInts.append(currentInt)
             lastInt = currentInt
         if len(randInts) == need_len:
             break
     return randInts
+
 
 def creatTestDataset(showList, total_num=16):
     """
@@ -293,11 +307,12 @@ def creatTestDataset(showList, total_num=16):
     :return: 随机列表, 包含相同1张, 不同3张
     """
     showList_ = showList.copy()
-    saveIndex = random.randint(0, len(showList_)-1)
+    saveIndex = random.randint(0, len(showList_) - 1)
     for i in [x for x in range(4) if x != saveIndex]:
         leftChoices = [t for t in range(total_num) if t != showList_[i]]
         showList_[i] = random.choice(leftChoices)
-    return showList_,saveIndex
+    return showList_, saveIndex
+
 
 class test4DatasetControl:
     def __init__(self, type_name=None):
@@ -312,7 +327,7 @@ class test4DatasetControl:
         self.rightIndex = []
         for name in type_name:
             for x in range(16):
-                self.allPath.append(os.path.join(name, str(x)+'.png'))
+                self.allPath.append(os.path.join(name, str(x) + '.png'))
 
     def createTest4Dataset(self, epoch, mini_bach):
         total_num = epoch * mini_bach
@@ -324,8 +339,8 @@ class test4DatasetControl:
         self.mini_batch = mini_bach
         self.total_epoch = total_epoch
         for name in self.type_name:
-            tList = self.createTest4Dataset(total_epoch//len(self.type_name), mini_bach)
-            tList = list(map(lambda x: os.path.join(name, str(x)+'.png'), tList))
+            tList = self.createTest4Dataset(total_epoch // len(self.type_name), mini_bach)
+            tList = list(map(lambda x: os.path.join(name, str(x) + '.png'), tList))
             self.showPath = self.showPath + tList
         assert len(self.showPath) % 4 == 0, "show list % 4 must be 0"
         random.shuffle(self.showPath)
@@ -333,7 +348,8 @@ class test4DatasetControl:
 
     def getShowDatasetByIndex(self, index):
         assert index <= self.total_epoch, "getShowDatasetByIndex: index must <= total_epoch"
-        return self.showPath[index*(len(self.showPath)//self.total_epoch):(index + 1) * (len(self.showPath)//self.total_epoch)]
+        return self.showPath[
+               index * (len(self.showPath) // self.total_epoch):(index + 1) * (len(self.showPath) // self.total_epoch)]
 
     def createTestDataset(self):
         self.testPath = []
@@ -358,6 +374,7 @@ class test4DatasetControl:
 
 if __name__ == '__main__':
     test = test4DatasetControl()
+    test.createShowDataset(2, 2)
     test.createShowDataset(1,4)
     print(test.getShowDatasetByIndex(0))
     print(test.getShowDatasetByIndex(1))

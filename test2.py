@@ -20,6 +20,7 @@ class mainProcess:
         self.SCREEN_WIDTH = self.showScreen[PRACTICE].winfo_screenwidth()
         self.SCREEN_HEIGHT = self.showScreen[PRACTICE].winfo_screenheight()
         self.CURRENTTRUE = False
+        self.logger = Logger(saveFilePath='test2.log')
 
     def destroy(self, choice):
         self.showScreen[choice].destroy()
@@ -50,8 +51,10 @@ class mainProcess:
             if (self.CURRENTTRUE is True and (event.char is 'm' or event.char is 'M')) or \
                     (self.CURRENTTRUE is False and (event.char is 'c' or event.char is 'C')):
                 print("正确！")
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='1')
             else:
                 print("错误！")
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='0')
 
 
     def waitRealTestConfirm(self, event):
@@ -71,8 +74,10 @@ class mainProcess:
             if (self.CURRENTTRUE is True and (event.char is 'm' or event.char is 'M')) or \
                     (self.CURRENTTRUE is False and (event.char is 'c' or event.char is 'C')):
                 print("正确！")
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='1')
             else:
                 print("错误！")
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='0')
 
     def canvasChangePic(self, imHandler, imgPath, imgWidth, imgHeight, sleepTime, choice, theCanvas):
         theCanvas = theCanvas[0]
@@ -97,17 +102,21 @@ class mainProcess:
         randPaths = ['./src/test2/' + str(x) + '.png' for x in randInts]
         for i, path in enumerate(randPaths):
             self.canvasChangePicTest(imHandler, path, imgWidth, imgHeight, 1, choice, theCanva)
+            self.logger.logImgShow(path, addTrack=True)
             if i == TrueIndex:
                 self.CURRENTTRUE = True
             else:
                 self.CURRENTTRUE = False
             theCanva[0].wait_variable(self.controlVal[choice]['IntVar'])
+        self.logger.logSomething("\n", addTime=False)
 
     def RandomShow(self, imHandler, imgWidth, imgHeight, choice, theCanvas):
         randInts = createShowDataset(total_num=10)
         randPaths = ['./src/test2/' + str(x) + '.png' for x in randInts]
         for path in randPaths:
             self.canvasChangePic(imHandler, path, imgWidth, imgHeight, 1, choice, theCanvas)
+            self.logger.logImgShow(path, addTrack=False)
+        self.logger.logSomething("\n", addTime=False)
         return randInts
 
     def practice(self):
@@ -138,7 +147,7 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
-        for _ in range(2):
+        for _ in range(8):
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_5.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 2, PRACTICE, mainCanvas)
             # 2. 随机出现四张图片
@@ -151,6 +160,9 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, rightInts)
 
+        print(self.logger.getTestAcc(select="key"))
+        print(self.logger.getAvgActTime(select="key"))
+        self.logger.closeFile()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(PRACTICE)
         self.showScreen[PRACTICE].mainloop()
@@ -187,7 +199,7 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
-        for _ in range(3):
+        for _ in range(20):
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_5.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
@@ -205,6 +217,9 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts)
 
+        print(self.logger.getTestAcc(select="key"))
+        print(self.logger.getAvgActTime(select="key"))
+        self.logger.closeFile()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(REALTEST)
         self.showScreen[REALTEST].mainloop()

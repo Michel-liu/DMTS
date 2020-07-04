@@ -21,6 +21,7 @@ class mainProcess:
         self.SCREEN_HEIGHT = self.showScreen[PRACTICE].winfo_screenheight()
         self.CURRENTTRUE = False
         self.datasetControl = None
+        self.logger = Logger(saveFilePath="./test4.log")
 
     def destroy(self, choice):
         self.showScreen[choice].destroy()
@@ -50,8 +51,10 @@ class mainProcess:
             if (self.CURRENTTRUE is True and (event.char is 'm' or event.char is 'M')) or \
                     (self.CURRENTTRUE is False and (event.char is 'c' or event.char is 'C')):
                 print("正确！")
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='1')
             else:
                 print("错误！")
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='0')
 
     def waitRealTestConfirm(self, event):
         if event.char == ' ' and self.controlVal[REALTEST]['state'] == 0:
@@ -70,10 +73,10 @@ class mainProcess:
             if (self.CURRENTTRUE is True and (event.char is 'm' or event.char is 'M')) or \
                     (self.CURRENTTRUE is False and (event.char is 'c' or event.char is 'C')):
                 print("正确！")
-                # todo 需要加入统计逻辑
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='1')
             else:
                 print("错误！")
-                # todo 需要加入统计逻辑
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='0')
 
     def canvasChangePic(self, imHandler, imgPath, imgWidth, imgHeight, sleepTime, choice, theCanvas):
         theCanvas = theCanvas[0]
@@ -98,18 +101,22 @@ class mainProcess:
         randPaths = ['./src/test4/' + x for x in randInts]
         for i, path in enumerate(randPaths):
             self.canvasChangePicTest(imHandler, path, imgWidth, imgHeight, 1, choice, theCanva)
+            self.logger.logImgShow(path, addTrack=True)
             if i in TrueIndex:
                 self.CURRENTTRUE = True
             else:
                 self.CURRENTTRUE = False
             theCanva[0].wait_variable(self.controlVal[choice]['IntVar'])
             self.canvasChangePic(imHandler, './src/test4/block.png', imgWidth, imgHeight, 0.1, choice, theCanva)
+        self.logger.logSomething("\n", addTime=False)
 
     def RandomShow(self, imHandler, imgWidth, imgHeight, choice, theCanvas, epoch):
         randInts = self.datasetControl.getShowDatasetByIndex(epoch)
         randPaths = ['./src/test4/' + x for x in randInts]
         for path in randPaths:
             self.canvasChangePic(imHandler, path, imgWidth, imgHeight, 1, choice, theCanvas)
+            self.logger.logImgShow(path, addTrack=False)
+        self.logger.logSomething("\n", addTime=False)
         return randInts
 
     def practice(self):
@@ -304,6 +311,9 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts, _)
 
+        print(self.logger.getTestAcc(select="key"))
+        print(self.logger.getAvgActTime(select="key"))
+        self.logger.closeFile()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(REALTEST)
         self.showScreen[REALTEST].mainloop()
