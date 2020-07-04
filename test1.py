@@ -73,10 +73,10 @@ class mainProcess:
             if (self.CURRENTTRUE is True and (event.char is 'm' or event.char is 'M')) or \
                     (self.CURRENTTRUE is False and (event.char is 'c' or event.char is 'C')):
                 print("正确！")
-                # todo 需要加入统计逻辑
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='1')
             else:
                 print("错误！")
-                # todo 需要加入统计逻辑
+                self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='0')
 
     def canvasChangePic(self, imHandler, imgPath, imgWidth, imgHeight, sleepTime, choice, theCanvas):
         theCanvas = theCanvas[0]
@@ -225,6 +225,9 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts)
 
+        print(self.logger.getTestAcc(select="key"))
+        print(self.logger.getAvgActTime(select="key"))
+        self.logger.closeFile()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(REALTEST)
         self.showScreen[REALTEST].mainloop()

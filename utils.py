@@ -324,6 +324,7 @@ class test4DatasetControl:
         self.allPath = []
         self.mini_batch = None
         self.total_epoch = None
+        self.rightIndex = []
         for name in type_name:
             for x in range(16):
                 self.allPath.append(os.path.join(name, str(x) + '.png'))
@@ -333,6 +334,7 @@ class test4DatasetControl:
         return createShowDataset(16, total_num)
 
     def createShowDataset(self, total_epoch, mini_bach):
+        self.showPath = []
         assert total_epoch % len(self.type_name) == 0, "creatShowDataset % must be 0"
         self.mini_batch = mini_bach
         self.total_epoch = total_epoch
@@ -350,22 +352,30 @@ class test4DatasetControl:
                index * (len(self.showPath) // self.total_epoch):(index + 1) * (len(self.showPath) // self.total_epoch)]
 
     def createTestDataset(self):
-        randIndexList = random.sample(range(len(self.showPath)), len(self.showPath) // 4)
+        self.testPath = []
+        randIndexList = random.sample(range(len(self.showPath)), len(self.showPath)//4)
         for i in range(len(self.showPath)):
             if i in randIndexList:
                 self.testPath.append(self.showPath[i])
+                self.rightIndex.append(1)
             else:
                 self.testPath.append(random.choice([x for x in self.allPath if x != self.showPath[i]]))
+                self.rightIndex.append(-1)
 
     def getTestDatasetByIndex(self, index):
         assert index <= self.total_epoch, "getTestDatasetByIndex: index must <= total_epoch"
-        return self.testPath[
-               index * (len(self.testPath) // self.total_epoch):(index + 1) * (len(self.testPath) // self.total_epoch)]
+        rightList = []
+        for i, num in enumerate(self.rightIndex[index*(len(self.testPath)//self.total_epoch):(index + 1) * (len(self.testPath)//self.total_epoch)]):
+            if num == 1:
+                rightList.append(i)
+
+        return self.testPath[index*(len(self.testPath)//self.total_epoch):(index + 1) * (len(self.testPath)//self.total_epoch)], rightList
 
 
 if __name__ == '__main__':
     test = test4DatasetControl()
     test.createShowDataset(2, 2)
+    test.createShowDataset(1,4)
     print(test.getShowDatasetByIndex(0))
     print(test.getShowDatasetByIndex(1))
     test.createTestDataset()
