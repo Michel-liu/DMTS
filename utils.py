@@ -343,12 +343,10 @@ def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
 
 def createShowDataset(total_num=16, need_len=4):
     randInts = []
-    lastInt = -1
     while True:
         currentInt = random.randint(0, total_num - 1)
-        if currentInt != lastInt:
+        if currentInt not in randInts:
             randInts.append(currentInt)
-            lastInt = currentInt
         if len(randInts) == need_len:
             break
     return randInts
@@ -360,11 +358,14 @@ def creatTestDataset(showList, total_num=16):
     :param showList: 之前展示的图像序号 范围[0, 15], 共4个
     :return: 随机列表, 包含相同1张, 不同3张
     """
-    showList_ = showList.copy()
+    showList_ = showList.copy() #[7,8,9,10]
     saveIndex = random.randint(0, len(showList_) - 1)
+    hadList = [showList_[saveIndex]]
     for i in [x for x in range(4) if x != saveIndex]:
-        leftChoices = [t for t in range(total_num) if t != showList_[i]]
-        showList_[i] = random.choice(leftChoices)
+        leftChoices = [t for t in range(total_num) if (t not in hadList) and (t != showList_[i])]
+        temp = random.choice(leftChoices)
+        hadList.append(temp)
+        showList_[i] = temp
     return showList_, saveIndex
 
 
