@@ -150,6 +150,7 @@ class Logger:
                     avgTime = avgTime + (self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
                 else:
                     avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
+            avgTime = avgTime.total_seconds()
             avgTime = avgTime / len(self.imgShowInfoList)
             self.logSomething(" :AvgTime: " + str(avgTime))
             return avgTime
@@ -161,6 +162,7 @@ class Logger:
                     avgTime = avgTime + (self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
                 else:
                     avgTime = self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time']
+            avgTime = avgTime.total_seconds()
             avgTime = avgTime / len(self.imgShowInfoList)
             self.logSomething(": AvgTime: " + str(avgTime))
             return avgTime
@@ -264,6 +266,34 @@ def resize(w, h, w_box, h_box, pil_image):
     height = int(h * factor)
     return pil_image.resize((width, height), Image.ANTIALIAS)
 
+def resize(w, h, w_box, h_box, pil_image):
+    '''
+  resize a pil_image object so it will fit into
+  a box of size w_box times h_box, but retain aspect ratio
+  对一个pil_image对象进行缩放，让它在一个矩形框内，还能保持比例
+  '''
+    f1 = 1.0 * w_box / w  # 1.0 forces float division in Python2
+    f2 = 1.0 * h_box / h
+    factor = min([f1, f2])
+    # print(f1, f2, factor) # test
+    # use best down-sizing filter
+    width = int(w * factor)
+    height = int(h * factor)
+    return pil_image.resize((width, height), Image.ANTIALIAS)
+
+def resize_(w, h, w_box, h_box, pil_image):
+    '''
+  resize a pil_image object so it will fit into
+  a box of size w_box times h_box, but retain aspect ratio
+  对一个pil_image对象进行缩放，让它在一个矩形框内，还能保持比例
+  '''
+    f1 = 1.0 * w_box / w  # 1.0 forces float division in Python2
+    f2 = 1.0 * h_box / h
+    # print(f1, f2, factor) # test
+    # use best down-sizing filter
+    width = int(w * f1)
+    height = int(h * f2)
+    return pil_image.resize((width, height), Image.ANTIALIAS)
 
 img = None
 photo = None
@@ -277,6 +307,17 @@ def loadPic(path, maxh, maxw):
     img_resize = resize(h, w, maxh, maxw, img)
     photo = ImageTk.PhotoImage(img_resize)
     return photo
+
+def loadPic_(path, maxh, maxw):
+    global img
+    global photo
+    img = Image.open(path)
+    w, h = img.size
+    img_resize = resize_(h, w, maxh, maxw, img)
+    photo = ImageTk.PhotoImage(img_resize)
+    return photo
+
+
 
 
 def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
@@ -406,13 +447,5 @@ def index2XY(index):
     return y, x
 
 if __name__ == '__main__':
-    # print(index2XY(15))
-    # log = Logger()
-    # log.logSomething("HHH",True)
-    test = test4DatasetControl()
-    test.createShowDataset(4, 4)
-    print(test.getShowDatasetByIndex(0))
-    print(test.getShowDatasetByIndex(1))
-    test.createTestDataset()
-    print(test.getTestDatasetByIndex(0))
-    print(test.getTestDatasetByIndex(1))
+    pass
+
