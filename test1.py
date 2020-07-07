@@ -93,7 +93,6 @@ class mainProcess:
         theCanvas = theCanvas[0]
         photo = loadPic_(imgPath, imgWidth, imgHeight)
         theCanvas.create_image(0,0,image=photo, anchor="nw")
-        # theCanvas.itemconfigure(imHandler, image=photo)
         theCanvas.pack()
         self.showScreen[choice].update()
         time.sleep(sleepTime)
