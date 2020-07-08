@@ -145,25 +145,56 @@ class Logger:
         if select == "key":
             assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
             avgTime = None
+            avgCorrectTime = None
+            avgCorrectCount = 0
             for i in range(len(self.imgShowInfoList)):
+                if avgCorrectTime is not None and self.keyPressInfoList[i]['isCrorrect'] == 1:
+                    avgCorrectTime = avgCorrectTime + (self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
+                    avgCorrectCount = avgCorrectCount + 1
+                elif self.keyPressInfoList[i]['isCrorrect'] == 1:
+                    avgCorrectTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
+                    avgCorrectCount = avgCorrectCount + 1
                 if avgTime is not None:
                     avgTime = avgTime + (self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
                 else:
                     avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
             avgTime = avgTime.total_seconds()
             avgTime = avgTime / len(self.imgShowInfoList)
+            if avgCorrectCount != 0:
+                avgCorrectTime = avgCorrectTime.total_seconds()
+                avgCorrectTime = avgCorrectTime / avgCorrectCount
+                self.logSomething(" :正确的反应时间-RTs: " + "{:.4f}".format(avgCorrectTime))
+            else:
+                self.logSomething(" :正确的反应时间-RTs: " + "全部回答错误，无法计算")
+
             self.logSomething(" :平均反应时间: " + "{:.4f}".format(avgTime))
             return avgTime
         else:
             assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
             avgTime = None
+            avgCorrectTime = None
+            avgCorrectCount = 0
             for i in range(len(self.imgShowInfoList)):
+                if avgCorrectTime is not None and self.mouseClickInfoList[i]['isCrorrect'] == 1:
+                    avgCorrectTime = avgCorrectTime + (self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
+                    avgCorrectCount = avgCorrectCount + 1
+                elif self.mouseClickInfoList[i]['isCrorrect'] == 1:
+                    avgCorrectTime = self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time']
+                    avgCorrectCount = avgCorrectCount + 1
                 if avgTime is not None:
                     avgTime = avgTime + (self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time'])
                 else:
                     avgTime = self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time']
             avgTime = avgTime.total_seconds()
             avgTime = avgTime / len(self.imgShowInfoList)
+
+            if avgCorrectCount != 0:
+                avgCorrectTime = avgCorrectTime.total_seconds()
+                avgCorrectTime = avgCorrectTime / avgCorrectCount
+                self.logSomething(" :正确的反应时间-RTs: " + "{:.4f}".format(avgCorrectTime))
+            else:
+                self.logSomething(" :正确的反应时间-RTs: " + "全部回答错误，无法计算")
+
             self.logSomething(": 平均反应时间: " + "{:.4f}".format(avgTime))
             return avgTime
 
