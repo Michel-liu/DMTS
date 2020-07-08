@@ -125,14 +125,14 @@ class Logger:
         if select == "key":
             assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
             acc = len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
-            self.logSomething(" :Acc: " + str(acc))
+            self.logSomething(" :平均准确率: " + "{:.4f}".format(acc))
             return acc
         elif select == "mouse":
             assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
             acc = len([x for x in self.mouseClickInfoList if x['isCrorrect'] == 1]) / len(self.mouseClickInfoList)
             distance = sum([x['distence'] for x in self.mouseClickInfoList]) / len(self.mouseClickInfoList)
-            self.logSomething(": Acc: " + str(acc))
-            self.logSomething(": Distance: " + str(distance))
+            self.logSomething(": 平均准确率: " + "{:.4f}".format(acc))
+            self.logSomething(": 平均距离: " + "{:.4f}".format(distance))
             return acc
 
     def getAvgActTime(self, select):
@@ -152,7 +152,7 @@ class Logger:
                     avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
             avgTime = avgTime.total_seconds()
             avgTime = avgTime / len(self.imgShowInfoList)
-            self.logSomething(" :AvgTime: " + str(avgTime))
+            self.logSomething(" :平均反应时间: " + "{:.4f}".format(avgTime))
             return avgTime
         else:
             assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
@@ -164,7 +164,7 @@ class Logger:
                     avgTime = self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time']
             avgTime = avgTime.total_seconds()
             avgTime = avgTime / len(self.imgShowInfoList)
-            self.logSomething(": AvgTime: " + str(avgTime))
+            self.logSomething(": 平均反应时间: " + "{:.4f}".format(avgTime))
             return avgTime
 
     def list2LogFile(self, logList, endWith='\n'):
