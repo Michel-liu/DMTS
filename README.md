@@ -19,3 +19,4 @@
 
 These program is coded by [Liu Huan](https://github.com/Michel-liu/) & [Sun Hanwu](https://github.com/sunhanwu). Thanks to my partner, for his hard working !
 
+All rights reserved. For commercial use, please contact us to obtain authorization !
