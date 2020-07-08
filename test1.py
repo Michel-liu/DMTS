@@ -93,7 +93,6 @@ class mainProcess:
         theCanvas = theCanvas[0]
         photo = loadPic_(imgPath, imgWidth, imgHeight)
         theCanvas.create_image(0,0,image=photo, anchor="nw")
-        # theCanvas.itemconfigure(imHandler, image=photo)
         theCanvas.pack()
         self.showScreen[choice].update()
         time.sleep(sleepTime)
@@ -142,7 +141,7 @@ class mainProcess:
         self.showScreen[PRACTICE].resizable(0, 0)
         buttonCanvas = Canvas(self.showScreen[PRACTICE], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT // 10)
         button1 = Button(buttonCanvas, text='暂停', width=30, height=2,
-                         command=lambda: messagebox.showinfo("暂停", "点击确定继续练习"))
+                         command=lambda: messagebox.showinfo("暂停", "点击右下方OK继续练习"))
         button2 = Button(buttonCanvas, text='退出', width=30, height=2, command=lambda: self.destroy(PRACTICE))
         button1.grid(row=1, column=1)
         button2.grid(row=1, column=2)
@@ -203,7 +202,7 @@ class mainProcess:
         self.showScreen[REALTEST].resizable(0, 0)
         buttonCanvas = Canvas(self.showScreen[REALTEST], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT // 10)
         button1 = Button(buttonCanvas, text='暂停', width=30, height=2,
-                         command=lambda: messagebox.showinfo("暂停", "点击确定继续测试"))
+                         command=lambda: messagebox.showinfo("暂停", "点击右下方OK继续测试"))
         button2 = Button(buttonCanvas, text='退出', width=30, height=2, command=lambda: self.destroy(REALTEST))
         button1.grid(row=1, column=1)
         button2.grid(row=1, column=2)

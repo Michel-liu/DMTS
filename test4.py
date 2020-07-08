@@ -41,7 +41,7 @@ class mainProcess:
             self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 1, name="PRACTICE")
             self.controlVal[PRACTICE]['value'] = 1
             return
-        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[PRACTICE]['state'] == 1 and self.LOCK == False:
+        if event.char in ['1', '2'] and self.controlVal[PRACTICE]['state'] == 1 and self.LOCK == False:
             self.LOCK = True
             if self.controlVal[PRACTICE]['value'] == 0:
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 1, name="PRACTICE")
@@ -50,8 +50,8 @@ class mainProcess:
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[PRACTICE], 0, name="PRACTICE")
                 self.controlVal[PRACTICE]['value'] = 0
 
-            if (self.CURRENTTRUE is True and (event.char is 'm' or event.char is 'M')) or \
-                    (self.CURRENTTRUE is False and (event.char is 'c' or event.char is 'C')):
+            if (self.CURRENTTRUE is True and (event.char is '1')) or \
+                    (self.CURRENTTRUE is False and (event.char is '2')):
                 print("正确！")
                 self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='1')
             else:
@@ -64,7 +64,7 @@ class mainProcess:
             self.controlVal[REALTEST]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
             self.controlVal[REALTEST]['value'] = 1
             return
-        if event.char in ['m', 'c', 'M', 'C'] and self.controlVal[REALTEST]['state'] == 1 and self.LOCK == False:
+        if event.char in ['1', '2'] and self.controlVal[REALTEST]['state'] == 1 and self.LOCK == False:
             self.LOCK = True
             if self.controlVal[PRACTICE]['value'] == 0:
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 1, name="REALTEST")
@@ -72,9 +72,8 @@ class mainProcess:
             elif self.controlVal[PRACTICE]['value'] == 1:
                 self.controlVal[PRACTICE]['IntVar'] = IntVar(self.showScreen[REALTEST], 0, name="REALTEST")
                 self.controlVal[PRACTICE]['value'] = 0
-
-            if (self.CURRENTTRUE is True and (event.char is 'm' or event.char is 'M')) or \
-                    (self.CURRENTTRUE is False and (event.char is 'c' or event.char is 'C')):
+            if (self.CURRENTTRUE is True and (event.char is '1')) or \
+                    (self.CURRENTTRUE is False and (event.char is '2')):
                 print("正确！")
                 self.logger.logPressKey(theKey=event.char, addTrack=TRUE, isCrorrect='1')
             else:
@@ -85,6 +84,14 @@ class mainProcess:
         theCanvas = theCanvas[0]
         photo = loadPic(imgPath, imgWidth, imgHeight)
         theCanvas.itemconfigure(imHandler, image=photo)
+        theCanvas.pack()
+        self.showScreen[choice].update()
+        time.sleep(sleepTime)
+
+    def canvasChangePic_(self, imHandler, imgPath, imgWidth, imgHeight, sleepTime, choice, theCanvas):
+        theCanvas = theCanvas[0]
+        photo = loadPic_(imgPath, imgWidth, imgHeight)
+        theCanvas.create_image(0,0,image=photo, anchor="nw")
         theCanvas.pack()
         self.showScreen[choice].update()
         time.sleep(sleepTime)
@@ -132,23 +139,24 @@ class mainProcess:
         self.showScreen[PRACTICE].title("延迟识别-位置练习")
         self.showScreen[PRACTICE].resizable(0, 0)
         buttonCanvas = Canvas(self.showScreen[PRACTICE], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT//10)
-        button1 = Button(buttonCanvas, text='暂停', width=30, height=2, command=lambda: messagebox.showinfo("暂停", "点击确定继续练习"))
+        button1 = Button(buttonCanvas, text='暂停', width=30, height=2, command=lambda: messagebox.showinfo("暂停", "点击右下方OK继续练习"))
         button2 = Button(buttonCanvas, text='退出', width=30, height=2, command=lambda: self.destroy(PRACTICE))
         button1.grid(row=1, column=1)
         button2.grid(row=1, column=2)
         mainCanvas = []
         mainCanvas.append(Canvas(self.showScreen[PRACTICE], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT*9//10, bg='black'))
-        photo = loadPic(r'./src/globle/start.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10)
+        photo = loadPic(r'./src/test4/start.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10)
         offsetX = (self.SCREEN_WIDTH - self.SCREEN_HEIGHT*9//10) / 2
         offsetY = 0
         imPractice = mainCanvas[0].create_image(offsetX, offsetY, image=photo, anchor="nw")
         mainCanvas[0].pack()
         buttonCanvas.pack()
+        self.canvasChangePic(imPractice, r'./src/test4/start.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 3, PRACTICE, mainCanvas)
         self.showScreen[PRACTICE].update()
+        self.canvasChangePic(imPractice, r'./src/test4/location_delay_recognition.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 0, PRACTICE, mainCanvas)
         mainCanvas[0].focus_set()
         mainCanvas[0].bind("<Key>", self.waitPracticeConfirm)
         self.showScreen[PRACTICE].wait_variable(self.controlVal[PRACTICE]['IntVar'])
-        self.canvasChangePic(imPractice, r'./src/test4/location_delay_recognition.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 3, PRACTICE, mainCanvas)
         # ####################
         # # 延迟识别-位置
         # ###################
@@ -163,8 +171,8 @@ class mainProcess:
             # 2. 随机出现四张图片
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, _)
             # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic(imPractice, './src/globle/white.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 0.1, PRACTICE, mainCanvas)
-            self.canvasChangePic(imPractice, './src/globle/black.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 3, PRACTICE, mainCanvas)
+            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH, self.SCREEN_HEIGHT*9//10, 0.1, PRACTICE, mainCanvas)
+            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 3, PRACTICE, mainCanvas)
             # 4. 测试阶段
             mainCanvas[0].pack()
             mainCanvas[0].focus_set()
@@ -198,9 +206,9 @@ class mainProcess:
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
                                         PRACTICE, mainCanvas, _)
             # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic(imPractice, './src/globle/white.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
-            self.canvasChangePic(imPractice, './src/globle/black.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 3, PRACTICE, mainCanvas)
             # 4. 测试阶段
             mainCanvas[0].pack()
@@ -233,9 +241,9 @@ class mainProcess:
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
                                         PRACTICE, mainCanvas, _)
             # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic(imPractice, './src/globle/white.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
-            self.canvasChangePic(imPractice, './src/globle/black.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 3, PRACTICE, mainCanvas)
             # 4. 测试阶段
             mainCanvas[0].pack()
@@ -243,7 +251,7 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
                                    mainCanvas, rightInts, _)
         self.logger.getTestAcc(select='key')
-        self.logger.getAvgActTime(select='ley')
+        self.logger.getAvgActTime(select='key')
 
         self.logger.logFileString.flush()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
@@ -261,25 +269,27 @@ class mainProcess:
         self.showScreen[REALTEST].resizable(0, 0)
         buttonCanvas = Canvas(self.showScreen[REALTEST], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT // 10)
         button1 = Button(buttonCanvas, text='暂停', width=30, height=2,
-                         command=lambda: messagebox.showinfo("暂停", "点击确定继续测试"))
+                         command=lambda: messagebox.showinfo("暂停", "点击右下方OK继续测试"))
         button2 = Button(buttonCanvas, text='退出', width=30, height=2, command=lambda: self.destroy(REALTEST))
         button1.grid(row=1, column=1)
         button2.grid(row=1, column=2)
         mainCanvas = []
         mainCanvas.append(
             Canvas(self.showScreen[REALTEST], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT * 9 // 10, bg='black'))
-        photo = loadPic(r'./src/globle/start.png', self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10)
+        photo = loadPic(r'./src/test4/start.png', self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10)
         offsetX = (self.SCREEN_WIDTH - self.SCREEN_HEIGHT * 9 // 10) / 2
         offsetY = 0
         imPractice = mainCanvas[0].create_image(offsetX, offsetY, image=photo, anchor="nw")
         mainCanvas[0].pack()
         buttonCanvas.pack()
+        self.canvasChangePic(imPractice, r'./src/test4/start.png', self.SCREEN_HEIGHT * 9 // 10,
+                             self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
         self.showScreen[REALTEST].update()
+        self.canvasChangePic(imPractice, r'./src/test4/location_delay_recognition.png', self.SCREEN_HEIGHT * 9 // 10,
+                             self.SCREEN_HEIGHT * 9 // 10, 0, REALTEST, mainCanvas)
         mainCanvas[0].focus_set()
         mainCanvas[0].bind("<Key>", self.waitRealTestConfirm)
         self.showScreen[REALTEST].wait_variable(self.controlVal[REALTEST]['IntVar'])
-        self.canvasChangePic(imPractice, r'./src/test4/location_delay_recognition.png', self.SCREEN_HEIGHT * 9 // 10,
-                             self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
         # ####################
         # # 延迟识别-位置
         # ###################
@@ -294,9 +304,9 @@ class mainProcess:
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
                                         REALTEST, mainCanvas, _)
             # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic(imPractice, './src/globle/white.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
-            self.canvasChangePic(imPractice, './src/globle/black.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
             # 4. 测试阶段
             mainCanvas[0].pack()
@@ -330,9 +340,9 @@ class mainProcess:
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
                                         REALTEST, mainCanvas, _)
             # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic(imPractice, './src/globle/white.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
-            self.canvasChangePic(imPractice, './src/globle/black.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
             # 4. 测试阶段
             mainCanvas[0].pack()
@@ -367,9 +377,9 @@ class mainProcess:
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
                                         REALTEST, mainCanvas, _)
             # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic(imPractice, './src/globle/white.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
-            self.canvasChangePic(imPractice, './src/globle/black.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
             # 4. 测试阶段
             mainCanvas[0].pack()

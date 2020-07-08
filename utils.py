@@ -125,14 +125,14 @@ class Logger:
         if select == "key":
             assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
             acc = len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
-            self.logSomething(" :Acc: " + str(acc))
+            self.logSomething(" :平均准确率: " + "{:.4f}".format(acc))
             return acc
         elif select == "mouse":
             assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
             acc = len([x for x in self.mouseClickInfoList if x['isCrorrect'] == 1]) / len(self.mouseClickInfoList)
             distance = sum([x['distence'] for x in self.mouseClickInfoList]) / len(self.mouseClickInfoList)
-            self.logSomething(": Acc: " + str(acc))
-            self.logSomething(": Distance: " + str(distance))
+            self.logSomething(": 平均准确率: " + "{:.4f}".format(acc))
+            self.logSomething(": 平均距离: " + "{:.4f}".format(distance))
             return acc
 
     def getAvgActTime(self, select):
@@ -152,7 +152,7 @@ class Logger:
                     avgTime = self.keyPressInfoList[i]['time'] - self.imgShowInfoList[i]['time']
             avgTime = avgTime.total_seconds()
             avgTime = avgTime / len(self.imgShowInfoList)
-            self.logSomething(" :AvgTime: " + str(avgTime))
+            self.logSomething(" :平均反应时间: " + "{:.4f}".format(avgTime))
             return avgTime
         else:
             assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
@@ -164,7 +164,7 @@ class Logger:
                     avgTime = self.mouseClickInfoList[i]['time'] - self.imgShowInfoList[i]['time']
             avgTime = avgTime.total_seconds()
             avgTime = avgTime / len(self.imgShowInfoList)
-            self.logSomething(": AvgTime: " + str(avgTime))
+            self.logSomething(": 平均反应时间: " + "{:.4f}".format(avgTime))
             return avgTime
 
     def list2LogFile(self, logList, endWith='\n'):
@@ -317,9 +317,6 @@ def loadPic_(path, maxh, maxw):
     photo = ImageTk.PhotoImage(img_resize)
     return photo
 
-
-
-
 def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
     """
     点击位置判断函数
@@ -343,12 +340,10 @@ def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
 
 def createShowDataset(total_num=16, need_len=4):
     randInts = []
-    lastInt = -1
     while True:
         currentInt = random.randint(0, total_num - 1)
-        if currentInt != lastInt:
+        if currentInt not in randInts:
             randInts.append(currentInt)
-            lastInt = currentInt
         if len(randInts) == need_len:
             break
     return randInts
@@ -360,18 +355,21 @@ def creatTestDataset(showList, total_num=16):
     :param showList: 之前展示的图像序号 范围[0, 15], 共4个
     :return: 随机列表, 包含相同1张, 不同3张
     """
-    showList_ = showList.copy()
+    showList_ = showList.copy() #[7,8,9,10]
     saveIndex = random.randint(0, len(showList_) - 1)
+    hadList = [showList_[saveIndex]]
     for i in [x for x in range(4) if x != saveIndex]:
-        leftChoices = [t for t in range(total_num) if t != showList_[i]]
-        showList_[i] = random.choice(leftChoices)
+        leftChoices = [t for t in range(total_num) if (t not in hadList) and (t != showList_[i])]
+        temp = random.choice(leftChoices)
+        hadList.append(temp)
+        showList_[i] = temp
     return showList_, saveIndex
 
 
 class test4DatasetControl:
     def __init__(self, type_name=None):
         if type_name is None:
-            type_name = ['green', 'red']
+            type_name = ['0green', '0red', '1green', '1red', '2green', '2red', '3green', '3red']
         self.type_name = type_name
         self.showPath = []
         self.testPath = []
@@ -397,7 +395,7 @@ class test4DatasetControl:
 
     def createShowDataset(self, total_epoch, mini_bach):
         self.showPath = []
-        assert total_epoch % len(self.type_name) == 0, "creatShowDataset % must be 0"
+        # assert total_epoch % len(self.type_name) == 0, "creatShowDataset % must be 0"
         self.mini_batch = mini_bach
         self.total_epoch = total_epoch
         self.showPath = self.createTest4Dataset(total_epoch, mini_bach)
@@ -416,7 +414,7 @@ class test4DatasetControl:
         self.testPath = []
         randIndexList = random.sample(range(self.total_epoch), len(self.showPath)//4)
 
-        for i in range(len(self.total_epoch)):
+        for i in range(self.total_epoch):
             temp = []
             if i in randIndexList:
                 randIndex = random.choice(range(self.mini_batch))
@@ -438,11 +436,13 @@ class test4DatasetControl:
     def getTestDatasetByIndex(self, index):
         assert index <= self.total_epoch, "getTestDatasetByIndex: index must <= total_epoch"
         rightList = []
-        for i, num in enumerate(self.rightIndex[index*(len(self.testPath)//self.total_epoch):(index + 1) * (len(self.testPath)//self.total_epoch)]):
+        for i, num in enumerate(self.rightIndex[index*(len(self.testPath)//self.total_epoch):(index + 1)
+                                        * (len(self.testPath)//self.total_epoch)]):
             if num == 1:
                 rightList.append(i)
 
-        return self.testPath[index*(len(self.testPath)//self.total_epoch):(index + 1) * (len(self.testPath)//self.total_epoch)], rightList
+        return self.testPath[index*(len(self.testPath)//self.total_epoch):(index + 1) *
+                                        (len(self.testPath)//self.total_epoch)], rightList
 
 def getDistence(xy1, xy2):
     x1 = xy1[0]
