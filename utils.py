@@ -369,7 +369,7 @@ def creatTestDataset(showList, total_num=16):
 class test4DatasetControl:
     def __init__(self, type_name=None):
         if type_name is None:
-            type_name = ['green', 'red']
+            type_name = ['0green', '0red', '1green', '1red', '2green', '2red', '3green', '3red']
         self.type_name = type_name
         self.showPath = []
         self.testPath = []
@@ -395,7 +395,7 @@ class test4DatasetControl:
 
     def createShowDataset(self, total_epoch, mini_bach):
         self.showPath = []
-        assert total_epoch % len(self.type_name) == 0, "creatShowDataset % must be 0"
+        # assert total_epoch % len(self.type_name) == 0, "creatShowDataset % must be 0"
         self.mini_batch = mini_bach
         self.total_epoch = total_epoch
         self.showPath = self.createTest4Dataset(total_epoch, mini_bach)
@@ -414,7 +414,7 @@ class test4DatasetControl:
         self.testPath = []
         randIndexList = random.sample(range(self.total_epoch), len(self.showPath)//4)
 
-        for i in range(len(self.total_epoch)):
+        for i in range(self.total_epoch):
             temp = []
             if i in randIndexList:
                 randIndex = random.choice(range(self.mini_batch))
