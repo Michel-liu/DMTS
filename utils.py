@@ -317,9 +317,6 @@ def loadPic_(path, maxh, maxw):
     photo = ImageTk.PhotoImage(img_resize)
     return photo
 
-
-
-
 def whereIAm(h, w, x, y, xRegionCount=4, yRegionCount=4):
     """
     点击位置判断函数
@@ -429,11 +426,13 @@ class test4DatasetControl:
     def getTestDatasetByIndex(self, index):
         assert index <= self.total_epoch, "getTestDatasetByIndex: index must <= total_epoch"
         rightList = []
-        for i, num in enumerate(self.rightIndex[index*(len(self.testPath)//self.total_epoch):(index + 1) * (len(self.testPath)//self.total_epoch)]):
+        for i, num in enumerate(self.rightIndex[index*(len(self.testPath)//self.total_epoch):(index + 1)
+                                        * (len(self.testPath)//self.total_epoch)]):
             if num == 1:
                 rightList.append(i)
 
-        return self.testPath[index*(len(self.testPath)//self.total_epoch):(index + 1) * (len(self.testPath)//self.total_epoch)], rightList
+        return self.testPath[index*(len(self.testPath)//self.total_epoch):(index + 1) *
+                                        (len(self.testPath)//self.total_epoch)], rightList
 
 def getDistence(xy1, xy2):
     x1 = xy1[0]
