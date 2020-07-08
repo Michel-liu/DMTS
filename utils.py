@@ -387,24 +387,22 @@ class test4DatasetControl:
                 return True
         return False
 
-    def createTest4Dataset(self, epoch, mini_bach):
-        total_num = epoch * mini_bach
-        return createShowDataset(16, total_num)
+    def createTest4Dataset(self, epoch, mini_batch):
+        showList = []
+        for i in range(epoch):
+            showList = showList + createShowDataset(16, mini_batch)
+        return showList
 
     def createShowDataset(self, total_epoch, mini_bach):
         self.showPath = []
         assert total_epoch % len(self.type_name) == 0, "creatShowDataset % must be 0"
         self.mini_batch = mini_bach
         self.total_epoch = total_epoch
-        for name in self.type_name:
-            tList = self.createTest4Dataset(total_epoch // len(self.type_name), mini_bach)
-            tList = list(map(lambda x: os.path.join(name, str(x) + '.png'), tList))
-            self.showPath = self.showPath + tList
-        assert len(self.showPath) % 4 == 0, "show list % 4 must be 0"
-        random.shuffle(self.showPath)
-        while self.isSameBetween():
-            random.shuffle(self.showPath)
+        self.showPath = self.createTest4Dataset(total_epoch, mini_bach)
 
+        for i in range(len(self.showPath)):
+            self.showPath[i] = os.path.join(random.choice(self.type_name), str(self.showPath[i]) + '.png')
+        assert len(self.showPath) % 4 == 0, "show list % 4 must be 0"
         return self.showPath
 
     def getShowDatasetByIndex(self, index):
@@ -414,14 +412,26 @@ class test4DatasetControl:
 
     def createTestDataset(self):
         self.testPath = []
-        randIndexList = random.sample(range(len(self.showPath)), len(self.showPath)//4)
-        for i in range(len(self.showPath)):
+        randIndexList = random.sample(range(self.total_epoch), len(self.showPath)//4)
+
+        for i in range(len(self.total_epoch)):
+            temp = []
             if i in randIndexList:
-                self.testPath.append(self.showPath[i])
-                self.rightIndex.append(1)
+                randIndex = random.choice(range(self.mini_batch))
+                for j in range(self.mini_batch):
+                    if j == randIndex:
+                        self.testPath.append(self.getShowDatasetByIndex(i)[j])
+                        temp.append(self.getShowDatasetByIndex(i)[j])
+                        self.rightIndex.append(1)
+                    else:
+                        self.testPath.append(random.choice([x for x in self.allPath if x != self.getShowDatasetByIndex(i)[j] and x not in temp]))
+                        temp.append(self.testPath[-1])
+                        self.rightIndex.append(-1)
             else:
-                self.testPath.append(random.choice([x for x in self.allPath if x != self.showPath[i]]))
-                self.rightIndex.append(-1)
+                for j in range(self.mini_batch):
+                    self.testPath.append(random.choice(
+                        [x for x in self.allPath if x != self.getShowDatasetByIndex(i)[j] and x not in temp]))
+                    self.rightIndex.append(-1)
 
     def getTestDatasetByIndex(self, index):
         assert index <= self.total_epoch, "getTestDatasetByIndex: index must <= total_epoch"
