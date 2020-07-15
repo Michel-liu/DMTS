@@ -181,14 +181,17 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, rightInts, _)
 
-        acc1 = self.logger.getTestAcc(select='key')
-        self.logger.getAvgActTime(select='key')
-        self.logger.logSomething("\n",False)
+        acc1 = self.logger.getTestAcc(select='key', write=False)
+        # self.logger.getAvgActTime(select='key')
+
         if acc1 < 0.85:
             self.logger.logFileString.flush()
-            messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+            self.logger.logSomething("\n", False)
             self.destroy(PRACTICE)
-            self.showScreen[PRACTICE].mainloop()
+            # self.showScreen[PRACTICE].mainloop()
+        else:
+            self.logger.getTestAcc(select='key')
+            self.logger.getAvgActTime(select='key')
 
         self.logger.logFileString.flush()
         self.logger.imgShowInfoList = []
@@ -219,13 +222,17 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
                                    mainCanvas, rightInts, _)
 
-        acc1 = self.logger.getTestAcc(select='key')
-        self.logger.getAvgActTime(select='key')
+        acc1 = self.logger.getTestAcc(select='key', write=False)
+        # self.logger.getAvgActTime(select='key')
         if acc1 < 0.85:
             self.logger.logFileString.flush()
-            messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+            # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
             self.destroy(PRACTICE)
-            self.showScreen[PRACTICE].mainloop()
+            # self.showScreen[PRACTICE].mainloop()
+        else:
+            self.logger.getTestAcc(select='key')
+            self.logger.getAvgActTime(select='key')
+
         self.logger.logSomething("\n",False)
         self.logger.logFileString.flush()
         self.logger.imgShowInfoList = []
@@ -253,8 +260,8 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
                                    mainCanvas, rightInts, _)
-        self.logger.getTestAcc(select='key')
-        self.logger.getAvgActTime(select='key')
+        # self.logger.getTestAcc(select='key')
+        # self.logger.getAvgActTime(select='key')
 
         self.logger.logFileString.flush()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
@@ -317,13 +324,17 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts, _)
 
-        acc1 = self.logger.getTestAcc(select='key')
-        self.logger.getAvgActTime(select='key')
+        acc1 = self.logger.getTestAcc(select='key',write=False)
+        # self.logger.getAvgActTime(select='key')
         if acc1 < 0.85:
             self.logger.logFileString.flush()
-            messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
-            self.destroy(PRACTICE)
-            self.showScreen[PRACTICE].mainloop()
+            # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+            self.destroy(REALTEST)
+            # self.showScreen[REALTEST].mainloop()
+        else:
+            self.logger.getTestAcc(select='key')
+            self.logger.getAvgActTime(select='key')
+
         self.logger.logSomething("\n", False)
         self.logger.logFileString.flush()
         self.logger.imgShowInfoList = []
@@ -353,14 +364,17 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts, _)
 
-        acc1 = self.logger.getTestAcc(select='key')
-        self.logger.getAvgActTime(select='key')
+        acc1 = self.logger.getTestAcc(select='key', write=False)
+        # self.logger.getAvgActTime(select='key')
         self.logger.logSomething("\n",False)
         if acc1 < 0.85:
             self.logger.logFileString.flush()
-            messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
-            self.destroy(PRACTICE)
-            self.showScreen[PRACTICE].mainloop()
+            # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+            self.destroy(REALTEST)
+            # self.showScreen[REALTEST].mainloop()
+        else:
+            self.logger.getTestAcc(select='key')
+            self.logger.getAvgActTime(select='key')
 
         self.logger.logFileString.flush()
         self.logger.imgShowInfoList = []
@@ -390,10 +404,10 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts, _)
 
-        print(self.logger.getTestAcc(select="key"))
-        print(self.logger.getAvgActTime(select="key"))
+        # print(self.logger.getTestAcc(select="key"))
+        # print(self.logger.getAvgActTime(select="key"))
         self.logger.logFileString.flush()
-        messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+        # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(REALTEST)
         self.showScreen[REALTEST].mainloop()
 

@@ -176,10 +176,10 @@ class mainProcess:
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, rightInts)
 
-        print(self.logger.getTestAcc(select="key"))
-        print(self.logger.getAvgActTime(select="key"))
+        # print(self.logger.getTestAcc(select="key"))
+        # print(self.logger.getAvgActTime(select="key"))
         self.logger.logFileString.flush()
-        messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+        # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(PRACTICE)
         self.showScreen[PRACTICE].mainloop()
 
@@ -236,10 +236,10 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, rightInts)
 
-        print(self.logger.getTestAcc(select="key"))
-        print(self.logger.getAvgActTime(select="key"))
+        # print(self.logger.getTestAcc(select="key"))
+        # print(self.logger.getAvgActTime(select="key"))
         self.logger.logFileString.flush()
-        messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
+        # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(REALTEST)
         self.showScreen[REALTEST].mainloop()
 

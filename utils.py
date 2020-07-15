@@ -115,7 +115,7 @@ class Logger:
             theLogList = [str(content)]
         self.list2LogFile(theLogList)
 
-    def getTestAcc(self, select):
+    def getTestAcc(self, select, write=True):
         """
         计算测试正确率
         :param select: 计算哪种类型的正确率 str: "key" or "mouse"
@@ -128,7 +128,8 @@ class Logger:
                 self.keyPressInfoList = self.keyPressInfoList[:min_len]
                 self.imgShowInfoList = self.imgShowInfoList[:min_len]
             acc = len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
-            self.logSomething(" :平均准确率: " + "{:.4f}".format(acc))
+            if write:
+                self.logSomething(" :平均准确率: " + "{:.4f}".format(acc))
             return acc
         elif select == "mouse":
             if len(self.mouseClickInfoList) != len(self.imgShowInfoList):
