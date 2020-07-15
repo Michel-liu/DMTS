@@ -3,7 +3,6 @@
 from tkinter import *
 from tkinter import messagebox
 
-import config
 from utils import *
 import random
 
@@ -33,6 +32,9 @@ class mainProcess:
         else:
             self.controlVal[choice]['IntVar'] = IntVar(self.showScreen[choice], 0, name="REALTEST")
         self.controlVal[choice]['value'] = 0
+        print(self.logger.getTestAcc(select="key"))
+        print(self.logger.getAvgActTime(select="key"))
+        messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
 
 
     def waitPracticeConfirm(self, event):
@@ -161,7 +163,7 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
-        for _ in range(8):
+        for _ in range(2):
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_5.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 2, PRACTICE, mainCanvas)
             # 2. 随机出现四张图片

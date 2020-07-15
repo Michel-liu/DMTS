@@ -3,7 +3,6 @@
 from tkinter import *
 from tkinter import messagebox
 
-import config
 from utils import *
 import random
 
@@ -34,6 +33,10 @@ class mainProcess:
         else:
             self.controlVal[choice]['IntVar'] = IntVar(self.showScreen[choice], 0, name="REALTEST")
         self.controlVal[choice]['value'] = 0
+        print(self.logger.getTestAcc(select="key"))
+        print(self.logger.getAvgActTime(select="key"))
+        self.logger.logFileString.flush()
+        messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
 
     def waitPracticeConfirm(self, event):
         if event.char == ' ' and self.controlVal[PRACTICE]['state'] == 0:

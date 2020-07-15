@@ -123,12 +123,18 @@ class Logger:
         """
         assert select == "key" or select == "mouse", "getTestAcc function need parm select"
         if select == "key":
-            assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            if len(self.keyPressInfoList) != len(self.imgShowInfoList):
+                min_len = min(len(self.keyPressInfoList), len(self.imgShowInfoList))
+                self.keyPressInfoList = self.keyPressInfoList[:min_len]
+                self.imgShowInfoList = self.imgShowInfoList[:min_len]
             acc = len([x for x in self.keyPressInfoList if x['isCrorrect'] == 1]) / len(self.keyPressInfoList)
             self.logSomething(" :平均准确率: " + "{:.4f}".format(acc))
             return acc
         elif select == "mouse":
-            assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            if len(self.mouseClickInfoList) != len(self.imgShowInfoList):
+                min_len = min(len(self.mouseClickInfoList), len(self.imgShowInfoList))
+                self.mouseClickInfoList = self.mouseClickInfoList[:min_len]
+                self.imgShowInfoList = self.imgShowInfoList[:min_len]
             acc = len([x for x in self.mouseClickInfoList if x['isCrorrect'] == 1]) / len(self.mouseClickInfoList)
             distance = sum([x['distence'] for x in self.mouseClickInfoList]) / len(self.mouseClickInfoList)
             self.logSomething(": 平均准确率: " + "{:.4f}".format(acc))
@@ -143,7 +149,10 @@ class Logger:
         """
         assert select == "key" or select == "mouse", "getAvgActTime function need parm select"
         if select == "key":
-            assert len(self.keyPressInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            if len(self.keyPressInfoList) != len(self.imgShowInfoList):
+                min_len = min(len(self.keyPressInfoList), len(self.imgShowInfoList))
+                self.keyPressInfoList = self.keyPressInfoList[:min_len]
+                self.imgShowInfoList = self.imgShowInfoList[:min_len]
             avgTime = None
             avgCorrectTime = None
             avgCorrectCount = 0
@@ -170,7 +179,10 @@ class Logger:
             self.logSomething(" :平均反应时间: " + "{:.4f}".format(avgTime))
             return avgTime
         else:
-            assert len(self.mouseClickInfoList) == len(self.imgShowInfoList), "Tow list have different len"
+            if len(self.mouseClickInfoList) != len(self.imgShowInfoList):
+                min_len = min(len(self.mouseClickInfoList), len(self.imgShowInfoList))
+                self.mouseClickInfoList = self.mouseClickInfoList[:min_len]
+                self.imgShowInfoList = self.imgShowInfoList[:min_len]
             avgTime = None
             avgCorrectTime = None
             avgCorrectCount = 0
