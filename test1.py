@@ -187,14 +187,13 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
-        for _ in range(2):
+        for _ in range(1):
             # 生成2张图片的数据集
-            showImg, testImg, trueMask = get2or3or4Imgs(2)
+            showImg, testImg, trueMask = get2or3or4Imgs(3)
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 2, PRACTICE, mainCanvas)
             # 2. 随机出现四张图片
-            # todo
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
                                         PRACTICE, mainCanvas, showImg)
             # 3. 出现一次白屏和一次黑屏
@@ -206,7 +205,27 @@ class mainProcess:
             # 4. 测试阶段
             mainCanvas[0].pack()
             mainCanvas[0].focus_set()
-            # todo
+            self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
+                                   mainCanvas, testImg, trueMask)
+
+        for _ in range(1):
+            # 生成2张图片的数据集
+            showImg, testImg, trueMask = get2or3or4Imgs(4)
+            # 1.屏幕中央出现一个十字
+            self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
+                                 self.SCREEN_HEIGHT * 9 // 10, 2, PRACTICE, mainCanvas)
+            # 2. 随机出现四张图片
+            rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
+                                        PRACTICE, mainCanvas, showImg)
+            # 3. 出现一次白屏和一次黑屏
+            # 白屏1秒钟
+            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
+                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
+            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
+                                 self.SCREEN_HEIGHT * 9 // 10, 3, PRACTICE, mainCanvas)
+            # 4. 测试阶段
+            mainCanvas[0].pack()
+            mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
                                    mainCanvas, testImg, trueMask)
 
@@ -257,13 +276,14 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
-        for _ in range(20):
+        for _ in range(2):
+            showImg, testImg, trueMask = get2or3or4Imgs(3)
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
             # 2. 随机出现四张图片
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
-                                        REALTEST, mainCanvas)
+                                        REALTEST, mainCanvas, showImg)
             # 3. 出现一次白屏和一次黑屏
             self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
                                   self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
@@ -273,7 +293,27 @@ class mainProcess:
             mainCanvas[0].pack()
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
-                                   mainCanvas, rightInts)
+                                   mainCanvas, testImg, trueMask)
+
+
+        for _ in range(2):
+            showImg, testImg, trueMask = get2or3or4Imgs(4)
+            # 1.屏幕中央出现一个十字
+            self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
+                                 self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
+            # 2. 随机出现四张图片
+            rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
+                                        REALTEST, mainCanvas, showImg)
+            # 3. 出现一次白屏和一次黑屏
+            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
+                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
+            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
+                                 self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
+            # 4. 测试阶段
+            mainCanvas[0].pack()
+            mainCanvas[0].focus_set()
+            self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
+                                   mainCanvas, testImg, trueMask)
 
         # print(self.logger.getTestAcc(select="key"))
         # print(self.logger.getAvgActTime(select="key"))
