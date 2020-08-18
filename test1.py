@@ -5,13 +5,14 @@ from tkinter import messagebox
 
 from utils import *
 import random
+import datetime
 
 PRACTICE = 0
 REALTEST = 1
 
 
 class mainProcess:
-    def __init__(self):
+    def __init__(self,user):
         self.showScreen = [Toplevel(), Toplevel()]
         for o in self.showScreen:
             o.withdraw()
@@ -19,9 +20,20 @@ class mainProcess:
                            {'value': 0, 'IntVar': IntVar(self.showScreen[REALTEST], 0, name="REALTEST"), 'state': 0}]
         self.SCREEN_WIDTH = self.showScreen[PRACTICE].winfo_screenwidth()
         self.SCREEN_HEIGHT = self.showScreen[PRACTICE].winfo_screenheight()
-        self.logger = Logger(saveFilePath='test1.log')
         self.CURRENTTRUE = False
         self.LOCK = None
+        self.name = ""
+        self.date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.user = user
+
+    def init_usernamename(self):
+        username = self.user.get().__str__()
+        if username == '':
+            messagebox.showinfo("Warning", "请输入用户名！")
+            return -1
+        self.name = username
+        return 0
+
 
     def destroy(self, choice):
         self.showScreen[choice].destroy()
@@ -94,7 +106,7 @@ class mainProcess:
     def canvasChangePic_(self, imHandler, imgPath, imgWidth, imgHeight, sleepTime, choice, theCanvas):
         theCanvas = theCanvas[0]
         photo = loadPic_(imgPath, imgWidth, imgHeight)
-        theCanvas.create_image(0,0,image=photo, anchor="nw")
+        theCanvas.create_image(0, 0, image=photo, anchor="nw")
         theCanvas.pack()
         self.showScreen[choice].update()
         time.sleep(sleepTime)
@@ -134,6 +146,14 @@ class mainProcess:
         return randInts
 
     def practice(self):
+        code = self.init_usernamename()
+        if code == -1:
+            return
+        print(type(self.date))
+        print(type(self.name))
+        savepath = self.date + '-' + self.name + '-practice.log'
+        savepath.replace(' ','')
+        self.logger = Logger(saveFilePath=savepath)
         self.logger.logSomething("**********开始练习：延迟识别-位置**********")
         self.controlVal[PRACTICE]['state'] = 0
         self.CURRENTTRUE = False
@@ -177,7 +197,7 @@ class mainProcess:
             # 3. 出现一次白屏和一次黑屏
             # 白屏1秒钟
             self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
-                                 self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
+                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
             self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 3, PRACTICE, mainCanvas)
             # 4. 测试阶段
@@ -194,6 +214,11 @@ class mainProcess:
         self.showScreen[PRACTICE].mainloop()
 
     def realTest(self):
+        code = self.init_usernamename()
+        if code == -1:
+            return
+        savepath = self.date + '-' + self.name + 'practice.log'
+        self.logger = Logger(saveFilePath=savepath)
         self.logger.logSomething("\n\n**********开始测试：延迟识别-位置**********")
         self.controlVal[REALTEST]['state'] = 0
         self.CURRENTTRUE = False
@@ -237,7 +262,7 @@ class mainProcess:
                                         REALTEST, mainCanvas)
             # 3. 出现一次白屏和一次黑屏
             self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
-                                 self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
+                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
             self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
             # 4. 测试阶段
@@ -256,21 +281,27 @@ class mainProcess:
     def close(self):
         self.logger.closeFile()
 
+
 def Entrance():
     master = Tk()
     master.title("延迟识别-位置")
-    master.geometry('500x250')
+    master.geometry('500x300')
     master.resizable(0, 0)
-    frame = Frame(master=master, width=100, height=20).pack()
+    frame = Frame(master=master, width=100, height=24).pack()
     label = Label(master=frame, text="延迟识别-位置", width=30, height=2, font=('黑体', 20))
     label.pack()
-    mainprocess = mainProcess()
+    label2 = Label(master=frame, text="请输入用户名:")
+    label2.pack()
+    entry = Entry(master=frame, width=30)
+    entry.pack()
+    mainprocess = mainProcess(entry)
     button_1 = Button(master=frame, text="开始练习", width=30, height=4, command=mainprocess.practice)
     button_1.pack()
     button_2 = Button(master=frame, text="开始检测", width=30, height=4, command=mainprocess.realTest)
     button_2.pack()
     master.mainloop()
     mainprocess.close()
+
 
 if __name__ == '__main__':
     Entrance()
