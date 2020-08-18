@@ -1,4 +1,4 @@
-# 练习程序-位置延迟识别程序
+# 位置-练习
 
 from tkinter import *
 from tkinter import messagebox
@@ -134,12 +134,12 @@ class mainProcess:
         return randInts
 
     def practice(self):
-        self.logger.logSomething("**********开始练习：位置延迟识别**********")
+        self.logger.logSomething("**********开始练习：位置-练习**********")
         self.controlVal[PRACTICE]['state'] = 0
         self.CURRENTTRUE = False
         self.showScreen[PRACTICE].deiconify()
         self.showScreen[PRACTICE].protocol('WM_DELETE_WINDOW', lambda :self.destroy(PRACTICE))
-        self.showScreen[PRACTICE].title("延迟识别-位置练习")
+        self.showScreen[PRACTICE].title("位置-练习")
         self.showScreen[PRACTICE].resizable(0, 0)
         buttonCanvas = Canvas(self.showScreen[PRACTICE], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT//10)
         button1 = Button(buttonCanvas, text='暂停', width=30, height=2, command=lambda: messagebox.showinfo("暂停", "点击右下方OK继续练习"))
@@ -164,118 +164,130 @@ class mainProcess:
         # # 延迟识别-位置
         # ###################
         # 负荷 2
-        messagebox.showinfo("负荷2", "负荷2,本轮测试共2轮！")
-        self.datasetControl = test4DatasetControl()
-        self.datasetControl.createShowDataset(2, 2)
-        self.datasetControl.createTestDataset()
-        for _ in range(2):
-            # 1.屏幕中央出现一个十字
-            self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 2, PRACTICE, mainCanvas)
-            # 2. 随机出现四张图片
-            rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, _)
-            # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH, self.SCREEN_HEIGHT*9//10, 0.1, PRACTICE, mainCanvas)
-            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 3, PRACTICE, mainCanvas)
-            # 4. 测试阶段
-            mainCanvas[0].pack()
-            mainCanvas[0].focus_set()
-            self.testDelayPosition(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, rightInts, _)
+        while True:
+            self.logger.imgShowInfoList = []
+            self.logger.keyPressInfoList = []
+            self.logger.mouseClickInfoList = []
+            messagebox.showinfo("负荷2", "负荷2,本轮测试共4轮！")
+            self.datasetControl = test4DatasetControl()
+            self.datasetControl.createShowDataset(2, 2)
+            self.datasetControl.createTestDataset()
+            for _ in range(2):
+                # 1.屏幕中央出现一个十字
+                self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 2, PRACTICE, mainCanvas)
+                # 2. 随机出现四张图片
+                rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, _)
+                # 3. 出现一次白屏和一次黑屏
+                self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH, self.SCREEN_HEIGHT*9//10, 0.1, PRACTICE, mainCanvas)
+                self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 3, PRACTICE, mainCanvas)
+                # 4. 测试阶段
+                mainCanvas[0].pack()
+                mainCanvas[0].focus_set()
+                self.testDelayPosition(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, rightInts, _)
 
-        acc1 = self.logger.getTestAcc(select='key', write=False)
-        # self.logger.getAvgActTime(select='key')
+            acc1 = self.logger.getTestAcc(select='key', write=False)
 
-        if acc1 < 0.85:
+            if acc1 < 0.80:
+                self.logger.logSomething("\n ACC < 80%; Again!\n", False)
+                self.logger.logFileString.flush()
+            else:
+                self.logger.getTestAcc(select='key')
+                self.logger.getAvgActTime(select='key')
+                self.logger.logFileString.flush()
+                break
+
+        while True:
             self.logger.logFileString.flush()
-            self.logger.logSomething("\n", False)
-            self.destroy(PRACTICE)
-            # self.showScreen[PRACTICE].mainloop()
-        else:
-            self.logger.getTestAcc(select='key')
-            self.logger.getAvgActTime(select='key')
+            self.logger.imgShowInfoList = []
+            self.logger.keyPressInfoList = []
+            self.logger.mouseClickInfoList = []
+            self.logger.logSomething("********************", False)
+            messagebox.showinfo("负荷3", "负荷3,本轮测试共4轮！")
+            self.datasetControl = test4DatasetControl()
+            self.datasetControl.createShowDataset(4, 3)
+            self.datasetControl.createTestDataset()
+            for _ in range(4):
+                # 1.屏幕中央出现一个十字
+                self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
+                                     self.SCREEN_HEIGHT * 9 // 10, 2, PRACTICE, mainCanvas)
+                # 2. 随机出现四张图片
+                rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
+                                            PRACTICE, mainCanvas, _)
+                # 3. 出现一次白屏和一次黑屏
+                self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
+                                     self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
+                self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
+                                     self.SCREEN_HEIGHT * 9 // 10, 3, PRACTICE, mainCanvas)
+                # 4. 测试阶段
+                mainCanvas[0].pack()
+                mainCanvas[0].focus_set()
+                self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
+                                       mainCanvas, rightInts, _)
 
-        self.logger.logFileString.flush()
-        self.logger.imgShowInfoList = []
-        self.logger.keyPressInfoList = []
-        self.logger.mouseClickInfoList = []
-
-        # todo 其他负荷
-        self.logger.logSomething("********************", False)
-        messagebox.showinfo("负荷3", "负荷3,本轮测试共4轮！")
-        self.datasetControl = test4DatasetControl()
-        self.datasetControl.createShowDataset(4, 3)
-        self.datasetControl.createTestDataset()
-        for _ in range(4):
-            # 1.屏幕中央出现一个十字
-            self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
-                                 self.SCREEN_HEIGHT * 9 // 10, 2, PRACTICE, mainCanvas)
-            # 2. 随机出现四张图片
-            rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
-                                        PRACTICE, mainCanvas, _)
-            # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
-                                 self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
-            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
-                                 self.SCREEN_HEIGHT * 9 // 10, 3, PRACTICE, mainCanvas)
-            # 4. 测试阶段
-            mainCanvas[0].pack()
-            mainCanvas[0].focus_set()
-            self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
-                                   mainCanvas, rightInts, _)
-
-        acc1 = self.logger.getTestAcc(select='key', write=False)
-        # self.logger.getAvgActTime(select='key')
-        if acc1 < 0.85:
-            self.logger.logFileString.flush()
-            # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
-            self.destroy(PRACTICE)
-            # self.showScreen[PRACTICE].mainloop()
-        else:
-            self.logger.getTestAcc(select='key')
-            self.logger.getAvgActTime(select='key')
+            acc1 = self.logger.getTestAcc(select='key', write=False)
+            # self.logger.getAvgActTime(select='key')
+            if acc1 < 0.80:
+                self.logger.logSomething("\n ACC < 80%; Again!\n", False)
+                self.logger.logFileString.flush()
+            else:
+                self.logger.getTestAcc(select='key')
+                self.logger.getAvgActTime(select='key')
+                self.logger.logFileString.flush()
+                break
 
         self.logger.logSomething("\n",False)
-        self.logger.logFileString.flush()
-        self.logger.imgShowInfoList = []
-        self.logger.keyPressInfoList = []
-        self.logger.mouseClickInfoList = []
-        self.logger.logSomething("********************", False)
-        messagebox.showinfo("负荷4", "负荷4,本轮测试共2轮！")
-        self.datasetControl = test4DatasetControl()
-        self.datasetControl.createShowDataset(2, 4)
-        self.datasetControl.createTestDataset()
-        for _ in range(2):
-            # 1.屏幕中央出现一个十字
-            self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
-                                 self.SCREEN_HEIGHT * 9 // 10, 2, PRACTICE, mainCanvas)
-            # 2. 随机出现四张图片
-            rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
-                                        PRACTICE, mainCanvas, _)
-            # 3. 出现一次白屏和一次黑屏
-            self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
-                                 self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
-            self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
-                                 self.SCREEN_HEIGHT * 9 // 10, 3, PRACTICE, mainCanvas)
-            # 4. 测试阶段
-            mainCanvas[0].pack()
-            mainCanvas[0].focus_set()
-            self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
-                                   mainCanvas, rightInts, _)
-        # self.logger.getTestAcc(select='key')
-        # self.logger.getAvgActTime(select='key')
 
-        self.logger.logFileString.flush()
+        while True:
+            self.logger.logFileString.flush()
+            self.logger.imgShowInfoList = []
+            self.logger.keyPressInfoList = []
+            self.logger.mouseClickInfoList = []
+            self.logger.logSomething("********************", False)
+            messagebox.showinfo("负荷4", "负荷4,本轮测试共2轮！")
+            self.datasetControl = test4DatasetControl()
+            self.datasetControl.createShowDataset(2, 4)
+            self.datasetControl.createTestDataset()
+            for _ in range(2):
+                # 1.屏幕中央出现一个十字
+                self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
+                                     self.SCREEN_HEIGHT * 9 // 10, 2, PRACTICE, mainCanvas)
+                # 2. 随机出现四张图片
+                rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
+                                            PRACTICE, mainCanvas, _)
+                # 3. 出现一次白屏和一次黑屏
+                self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
+                                     self.SCREEN_HEIGHT * 9 // 10, 0.1, PRACTICE, mainCanvas)
+                self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
+                                     self.SCREEN_HEIGHT * 9 // 10, 3, PRACTICE, mainCanvas)
+                # 4. 测试阶段
+                mainCanvas[0].pack()
+                mainCanvas[0].focus_set()
+                self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
+                                   mainCanvas, rightInts, _)
+
+            acc1 = self.logger.getTestAcc(select='key', write=False)
+            # self.logger.getAvgActTime(select='key')
+            if acc1 < 0.80:
+                self.logger.logSomething("\n ACC < 80%; Again!\n", False)
+                self.logger.logFileString.flush()
+            else:
+                self.logger.getTestAcc(select='key')
+                self.logger.getAvgActTime(select='key')
+                self.logger.logFileString.flush()
+                break
+
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
         self.destroy(PRACTICE)
         self.showScreen[PRACTICE].mainloop()
 
     def realTest(self):
-        self.logger.logSomething("**********开始测试：位置延迟识别**********")
+        self.logger.logSomething("**********开始测试：位置-练习**********")
         self.controlVal[REALTEST]['state'] = 0
         self.CURRENTTRUE = False
 
         self.showScreen[REALTEST].deiconify()
         self.showScreen[REALTEST].protocol('WM_DELETE_WINDOW', lambda: self.destroy(REALTEST))
-        self.showScreen[REALTEST].title("延迟识别-位置测试")
+        self.showScreen[REALTEST].title("位置-练习")
         self.showScreen[REALTEST].resizable(0, 0)
         buttonCanvas = Canvas(self.showScreen[REALTEST], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT // 10)
         button1 = Button(buttonCanvas, text='暂停', width=30, height=2,
@@ -413,11 +425,11 @@ class mainProcess:
 
 def Entrance():
     master = Tk()
-    master.title("练习程序-位置延迟识别程序")
+    master.title("位置-练习")
     master.geometry('500x250')
     master.resizable(0, 0)
     frame = Frame(master=master, width=100, height=20).pack()
-    label = Label(master=frame, text="位置延迟识别程序", width=30, height=2, font=('黑体', 20))
+    label = Label(master=frame, text="位置-练习", width=30, height=2, font=('黑体', 20))
     label.pack()
     mainprocess = mainProcess()
     button_1 = Button(master=frame, text="开始练习", width=30, height=4, command=mainprocess.practice)

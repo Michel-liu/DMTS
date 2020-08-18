@@ -500,6 +500,29 @@ def index2XY(index):
     x = index - 4 * y
     return y, x
 
+def get2or3or4Imgs(needLen, imgTotalCount=16, acc=0.25):
+    '''
+    用于生成2或3张图像的索引，正确概率0.25(正确的话保证在原位置)
+    :return: 展示图片索引，测试图像索引
+    '''
+    showImgIndex = []
+    testImgIndex = []
+    trueMask = []
+
+    while len(showImgIndex) < needLen:
+        leftImgs = [x for x in range(imgTotalCount) if x not in showImgIndex and x not in testImgIndex]
+        showImgIndex.append(random.choice(leftImgs))
+        rand = random.uniform(0, 1)
+        if rand < acc:
+            testImgIndex.append(showImgIndex[-1])
+            trueMask.append(1)
+        else:
+            leftImgs_ = [x for x in range(imgTotalCount) if x not in showImgIndex and x not in testImgIndex]
+            testImgIndex.append(random.choice(leftImgs_))
+            trueMask.append(0)
+
+    return showImgIndex, testImgIndex, trueMask
+
+
 if __name__ == '__main__':
     pass
-
