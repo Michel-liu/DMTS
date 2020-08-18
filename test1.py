@@ -25,6 +25,8 @@ class mainProcess:
         self.name = ""
         self.date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.user = user
+        createLogDirection()
+
 
     def init_usernamename(self):
         username = self.user.get().__str__()
@@ -146,12 +148,11 @@ class mainProcess:
         return randInts
 
     def practice(self):
+        prefixPath = './log/test1/practice/'
         code = self.init_usernamename()
         if code == -1:
             return
-        print(type(self.date))
-        print(type(self.name))
-        savepath = self.date + '-' + self.name + '-练习日志.log'
+        savepath = prefixPath  + self.date + '-' + self.name + '-练习日志.log'
         savepath.replace(' ','')
         self.logger = Logger(saveFilePath=savepath)
         self.logger.logSomething("**********开始练习：延迟识别-位置**********")
@@ -237,10 +238,11 @@ class mainProcess:
         self.showScreen[PRACTICE].mainloop()
 
     def realTest(self):
+        prefixPath = './log/test1/realtest/'
         code = self.init_usernamename()
         if code == -1:
             return
-        savepath = self.date + '-' + self.name + '-测试日志.log'
+        savepath = prefixPath + self.date + '-' + self.name + '-测试日志.log'
         self.logger = Logger(saveFilePath=savepath)
         self.logger.logSomething("\n\n**********开始测试：延迟识别-位置**********")
         self.controlVal[REALTEST]['state'] = 0
