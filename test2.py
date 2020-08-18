@@ -110,13 +110,13 @@ class mainProcess:
         self.showScreen[choice].update()
         # time.sleep(sleepTime)
 
-    def testDelayPosition(self, imHandler, imgWidth, imgHeight, choice, theCanva, rightInts):
-        randInts, TrueIndex = creatTestDataset(rightInts,total_num=10)
+    def testDelayPosition(self, imHandler, imgWidth, imgHeight, choice, theCanva, testImg, trueMask):
+        randInts = testImg
         randPaths = ['./src/test2/' + str(x) + '.png' for x in randInts]
         for i, path in enumerate(randPaths):
             self.canvasChangePicTest(imHandler, path, imgWidth, imgHeight, 1, choice, theCanva)
             self.logger.logImgShow(path, addTrack=True)
-            if i == TrueIndex:
+            if trueMask[i] == 1:
                 self.CURRENTTRUE = True
             else:
                 self.CURRENTTRUE = False
@@ -124,8 +124,8 @@ class mainProcess:
             theCanva[0].wait_variable(self.controlVal[choice]['IntVar'])
         self.logger.logSomething("\n", addTime=False)
 
-    def RandomShow(self, imHandler, imgWidth, imgHeight, choice, theCanvas):
-        randInts = createShowDataset(total_num=10)
+    def RandomShow(self, imHandler, imgWidth, imgHeight, choice, theCanvas, showImg):
+        randInts = showImg
         randPaths = ['./src/test2/' + str(x) + '.png' for x in randInts]
         for path in randPaths:
             self.canvasChangePic(imHandler, path, imgWidth, imgHeight, 1, choice, theCanvas)
@@ -163,18 +163,19 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
-        for _ in range(2):
+        for _ in range(1):
+            showImg, testImg, trueMask = get2or3or4Imgs(4, imgTotalCount=10)
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_5.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 2, PRACTICE, mainCanvas)
             # 2. 随机出现四张图片
-            rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas)
+            rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, showImg)
             # 3. 出现一次白屏和一次黑屏
             self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH, self.SCREEN_HEIGHT*9//10, 0.1, PRACTICE, mainCanvas)
             self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 3, PRACTICE, mainCanvas)
             # 4. 测试阶段
             mainCanvas[0].pack()
             mainCanvas[0].focus_set()
-            self.testDelayPosition(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, rightInts)
+            self.testDelayPosition(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, testImg, trueMask)
 
         # print(self.logger.getTestAcc(select="key"))
         # print(self.logger.getAvgActTime(select="key"))
@@ -218,13 +219,14 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
-        for _ in range(20):
+        for _ in range(10):
+            showImg, testImg, trueMask = get2or3or4Imgs(4, imgTotalCount=10)
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_5.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
             # 2. 随机出现四张图片
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
-                                        REALTEST, mainCanvas)
+                                        REALTEST, mainCanvas, showImg)
             # 3. 出现一次白屏和一次黑屏
             self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
                                  self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
@@ -234,7 +236,7 @@ class mainProcess:
             mainCanvas[0].pack()
             mainCanvas[0].focus_set()
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
-                                   mainCanvas, rightInts)
+                                   mainCanvas, testImg, trueMask)
 
         # print(self.logger.getTestAcc(select="key"))
         # print(self.logger.getAvgActTime(select="key"))
