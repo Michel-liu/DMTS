@@ -121,13 +121,13 @@ class mainProcess:
         self.showScreen[choice].update()
         # time.sleep(sleepTime)
 
-    def testDelayPosition(self, imHandler, imgWidth, imgHeight, choice, theCanva, rightInts):
-        randInts, TrueIndex = creatTestDataset(rightInts)
+    def testDelayPosition(self, imHandler, imgWidth, imgHeight, choice, theCanva, testImg, trueMask):
+        randInts = testImg
         randPaths = ['./src/globle/' + str(x) + '.png' for x in randInts]
         for i, path in enumerate(randPaths):
             self.canvasChangePicTest(imHandler, path, imgWidth, imgHeight, 1, choice, theCanva)
             self.logger.logImgShow(path, addTrack=True)
-            if i == TrueIndex:
+            if trueMask[i] == 1:
                 self.CURRENTTRUE = True
             else:
                 self.CURRENTTRUE = False
@@ -136,8 +136,8 @@ class mainProcess:
             self.canvasChangePic(imHandler, './src/globle/black.png', imgWidth, imgHeight, 0.1, choice, theCanva)
         self.logger.logSomething("\n", addTime=False)
 
-    def RandomShow(self, imHandler, imgWidth, imgHeight, choice, theCanvas):
-        randInts = createShowDataset()
+    def RandomShow(self, imHandler, imgWidth, imgHeight, choice, theCanvas, showImg):
+        randInts = showImg
         randPaths = ['./src/globle/' + str(x) + '.png' for x in randInts]
         for path in randPaths:
             self.canvasChangePic(imHandler, path, imgWidth, imgHeight, 1, choice, theCanvas)
@@ -151,7 +151,7 @@ class mainProcess:
             return
         print(type(self.date))
         print(type(self.name))
-        savepath = self.date + '-' + self.name + '-practice.log'
+        savepath = self.date + '-' + self.name + '-练习日志.log'
         savepath.replace(' ','')
         self.logger = Logger(saveFilePath=savepath)
         self.logger.logSomething("**********开始练习：延迟识别-位置**********")
@@ -159,7 +159,7 @@ class mainProcess:
         self.CURRENTTRUE = False
         self.showScreen[PRACTICE].deiconify()
         self.showScreen[PRACTICE].protocol('WM_DELETE_WINDOW', lambda: self.destroy(PRACTICE))
-        self.showScreen[PRACTICE].title("延迟识别-位置练习")
+        self.showScreen[PRACTICE].title("延迟识别-位置(练习)")
         self.showScreen[PRACTICE].resizable(0, 0)
         buttonCanvas = Canvas(self.showScreen[PRACTICE], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT // 10)
         button1 = Button(buttonCanvas, text='暂停', width=30, height=2,
@@ -188,12 +188,15 @@ class mainProcess:
         # # 延迟识别-位置
         # ###################
         for _ in range(2):
+            # 生成2张图片的数据集
+            showImg, testImg, trueMask = get2or3or4Imgs(2)
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 2, PRACTICE, mainCanvas)
             # 2. 随机出现四张图片
+            # todo
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
-                                        PRACTICE, mainCanvas)
+                                        PRACTICE, mainCanvas, showImg)
             # 3. 出现一次白屏和一次黑屏
             # 白屏1秒钟
             self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
@@ -203,8 +206,9 @@ class mainProcess:
             # 4. 测试阶段
             mainCanvas[0].pack()
             mainCanvas[0].focus_set()
+            # todo
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
-                                   mainCanvas, rightInts)
+                                   mainCanvas, testImg, trueMask)
 
         # print(self.logger.getTestAcc(select="key"))
         # print(self.logger.getAvgActTime(select="key"))
@@ -217,7 +221,7 @@ class mainProcess:
         code = self.init_usernamename()
         if code == -1:
             return
-        savepath = self.date + '-' + self.name + 'practice.log'
+        savepath = self.date + '-' + self.name + '-测试日志.log'
         self.logger = Logger(saveFilePath=savepath)
         self.logger.logSomething("\n\n**********开始测试：延迟识别-位置**********")
         self.controlVal[REALTEST]['state'] = 0
@@ -225,7 +229,7 @@ class mainProcess:
 
         self.showScreen[REALTEST].deiconify()
         self.showScreen[REALTEST].protocol('WM_DELETE_WINDOW', lambda: self.destroy(REALTEST))
-        self.showScreen[REALTEST].title("延迟识别-位置测试")
+        self.showScreen[REALTEST].title("延迟识别-位置")
         self.showScreen[REALTEST].resizable(0, 0)
         buttonCanvas = Canvas(self.showScreen[REALTEST], width=self.SCREEN_WIDTH, height=self.SCREEN_HEIGHT // 10)
         button1 = Button(buttonCanvas, text='暂停', width=30, height=2,
