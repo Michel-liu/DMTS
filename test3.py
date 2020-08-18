@@ -266,7 +266,7 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
-        for _ in range(2):
+        for _ in range(10):
             showImg, testImg, trueMask = get2or3or4Imgs(3)
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
@@ -285,7 +285,7 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, showImg)
 
-        for _ in range(2):
+        for _ in range(10):
             showImg, testImg, trueMask = get2or3or4Imgs(4)
             # 1.屏幕中央出现一个十字
             self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,

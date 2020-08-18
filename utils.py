@@ -468,13 +468,13 @@ class test4DatasetControl:
                         temp.append(self.getShowDatasetByIndex(i)[j])
                         self.rightIndex.append(1)
                     else:
-                        self.testPath.append(random.choice([x for x in self.allPath if x != self.getShowDatasetByIndex(i)[j] and x not in temp]))
+                        self.testPath.append(random.choice([x for x in self.allPath if x != self.getShowDatasetByIndex(i)[j] and x not in temp and x not in self.testPath]))
                         temp.append(self.testPath[-1])
                         self.rightIndex.append(-1)
             else:
                 for j in range(self.mini_batch):
                     self.testPath.append(random.choice(
-                        [x for x in self.allPath if x != self.getShowDatasetByIndex(i)[j] and x not in temp]))
+                        [x for x in self.allPath if x != self.getShowDatasetByIndex(i)[j] and x not in temp and x not in self.testPath]))
                     self.rightIndex.append(-1)
 
     def getTestDatasetByIndex(self, index):
