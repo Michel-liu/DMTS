@@ -5,12 +5,13 @@ from tkinter import messagebox
 
 from utils import *
 import random
+import datetime
 
 PRACTICE = 0
 REALTEST = 1
 
 class mainProcess:
-    def __init__(self):
+    def __init__(self,user):
         self.showScreen = [Toplevel(), Toplevel()]
         for o in self.showScreen:
             o.withdraw()
@@ -20,8 +21,21 @@ class mainProcess:
         self.SCREEN_HEIGHT = self.showScreen[PRACTICE].winfo_screenheight()
         self.CURRENTTRUE = False
         self.datasetControl = None
-        self.logger = Logger(saveFilePath="test4.log")
+        # self.logger = Logger(saveFilePath="test4.log")
         self.LOCK = None
+        self.name = ""
+        self.date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.user = user
+        # self.logger = None
+        createLogDirection()
+
+    def init_usernamename(self):
+        username = self.user.get().__str__()
+        if username == '':
+            messagebox.showinfo("Warning", "请输入用户名！")
+            return -1
+        self.name = username
+        return 0
 
     def destroy(self, choice):
         self.showScreen[choice].destroy()
@@ -134,6 +148,13 @@ class mainProcess:
         return randInts
 
     def practice(self):
+        prefixPath = './log/test4/practice/'
+        code = self.init_usernamename()
+        if code == -1:
+            return
+        savepath = prefixPath + self.date + '-' + self.name + '-练习日志.log'
+        savepath.replace(' ', '')
+        self.logger = Logger(saveFilePath=savepath)
         self.logger.logSomething("**********开始练习：位置-练习**********")
         self.controlVal[PRACTICE]['state'] = 0
         self.CURRENTTRUE = False
@@ -168,7 +189,7 @@ class mainProcess:
             self.logger.imgShowInfoList = []
             self.logger.keyPressInfoList = []
             self.logger.mouseClickInfoList = []
-            messagebox.showinfo("负荷2", "负荷2,本轮测试共4轮！")
+            messagebox.showinfo("负荷2", "负荷2,本轮测试共2轮！")
             self.datasetControl = test4DatasetControl()
             self.datasetControl.createShowDataset(2, 2)
             self.datasetControl.createTestDataset()
@@ -281,6 +302,12 @@ class mainProcess:
         self.showScreen[PRACTICE].mainloop()
 
     def realTest(self):
+        prefixPath = './log/test4/realtest/'
+        code = self.init_usernamename()
+        if code == -1:
+            return
+        savepath = prefixPath + self.date + '-' + self.name + '-测试日志.log'
+        self.logger = Logger(saveFilePath=savepath)
         self.logger.logSomething("**********开始测试：位置-练习**********")
         self.controlVal[REALTEST]['state'] = 0
         self.CURRENTTRUE = False
@@ -446,12 +473,16 @@ class mainProcess:
 def Entrance():
     master = Tk()
     master.title("位置-练习")
-    master.geometry('500x250')
+    master.geometry('500x300')
     master.resizable(0, 0)
-    frame = Frame(master=master, width=100, height=20).pack()
+    frame = Frame(master=master, width=100, height=24).pack()
     label = Label(master=frame, text="位置-练习", width=30, height=2, font=('黑体', 20))
     label.pack()
-    mainprocess = mainProcess()
+    label2 = Label(master=frame, text="请输入用户名:")
+    label2.pack()
+    entry = Entry(master=frame, width=30)
+    entry.pack()
+    mainprocess = mainProcess(entry)
     button_1 = Button(master=frame, text="开始练习", width=30, height=4, command=mainprocess.practice)
     button_1.pack()
     button_2 = Button(master=frame, text="开始检测", width=30, height=4, command=mainprocess.realTest)
