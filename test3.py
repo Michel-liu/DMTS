@@ -39,7 +39,7 @@ class mainProcess:
         self.name = username
         return 0
 
-    def destroy(self, choice):
+    def destroy(self, choice, output=True):
         self.showScreen[choice].destroy()
         self.showScreen[choice] = Toplevel()
         self.showScreen[choice].withdraw()
@@ -49,9 +49,11 @@ class mainProcess:
         else:
             self.controlVal[choice]['IntVar'] = IntVar(self.showScreen[choice], 0, name="REALTEST")
         self.controlVal[choice]['value'] = 0
-        print(self.logger.getTestAcc(select="mouse"))
-        print(self.logger.getAvgActTime(select="mouse"))
+        if output:
+            print(self.logger.getTestAcc(select="mouse"))
+            print(self.logger.getAvgActTime(select="mouse"))
         self.logger.logFileString.flush()
+        self.logger.logFileString.close()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
 
     def waitPracticeClick(self, event):
@@ -228,6 +230,17 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, PRACTICE,
                                    mainCanvas, showImg)
 
+        self.logger.logSomething("***********3张图片测试结果************", False)
+        self.logger.getTestAcc(select='mouse')
+        self.logger.getAvgActTime(select='mouse')
+        self.logger.logSomething("***********************************", False)
+
+        self.logger.logFileString.flush()
+
+        self.logger.imgShowInfoList = []
+        self.logger.keyPressInfoList = []
+        self.logger.mouseClickInfoList = []
+
         for _ in range(1):
             showImg, testImg, trueMask = get2or3or4Imgs(4)
             # 1.屏幕中央出现一个十字
@@ -248,9 +261,14 @@ class mainProcess:
                                    mainCanvas, showImg)
         # print(self.logger.getTestAcc(select="mouse"))
         # print(self.logger.getAvgActTime(select="mouse"))
+        self.logger.logSomething("***********4张图片测试结果************", False)
+        self.logger.getTestAcc(select='mouse')
+        self.logger.getAvgActTime(select='mouse')
+        self.logger.logSomething("***********************************", False)
+
         self.logger.logFileString.flush()
         # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
-        self.destroy(PRACTICE)
+        self.destroy(PRACTICE, output=False)
         self.showScreen[PRACTICE].mainloop()
 
     def realTest(self):
@@ -312,6 +330,17 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, showImg)
 
+        self.logger.logSomething("***********3张图片测试结果************", False)
+        self.logger.getTestAcc(select='mouse')
+        self.logger.getAvgActTime(select='mouse')
+        self.logger.logSomething("***********************************", False)
+
+        self.logger.logFileString.flush()
+
+        self.logger.imgShowInfoList = []
+        self.logger.keyPressInfoList = []
+        self.logger.mouseClickInfoList = []
+
         for _ in range(10):
             showImg, testImg, trueMask = get2or3or4Imgs(4)
             # 1.屏幕中央出现一个十字
@@ -332,10 +361,13 @@ class mainProcess:
                                    mainCanvas, showImg)
         # print(self.logger.getTestAcc(select="mouse"))
         # print(self.logger.getAvgActTime(select="mouse"))
+        self.logger.logSomething("***********4张图片测试结果************", False)
+        self.logger.getTestAcc(select='mouse')
+        self.logger.getAvgActTime(select='mouse')
+        self.logger.logSomething("***********************************", False)
         self.logger.logFileString.flush()
         # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
-        self.destroy(REALTEST)
-
+        self.destroy(REALTEST, output=False)
         self.showScreen[REALTEST].mainloop()
 
 def Entrance():
@@ -356,7 +388,6 @@ def Entrance():
     button_2 = Button(master=frame, text="开始检测", width=30, height=4, command=mainprocess.realTest)
     button_2.pack()
     master.mainloop()
-    mainprocess.logger.logFileString.close()
 
 
 if __name__ == '__main__':

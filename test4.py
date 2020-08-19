@@ -37,7 +37,7 @@ class mainProcess:
         self.name = username
         return 0
 
-    def destroy(self, choice):
+    def destroy(self, choice, output=True):
         self.showScreen[choice].destroy()
         self.showScreen[choice] = Toplevel()
         self.showScreen[choice].withdraw()
@@ -47,9 +47,11 @@ class mainProcess:
         else:
             self.controlVal[choice]['IntVar'] = IntVar(self.showScreen[choice], 0, name="REALTEST")
         self.controlVal[choice]['value'] = 0
-        print(self.logger.getTestAcc(select="key"))
-        print(self.logger.getAvgActTime(select="key"))
+        if output:
+            print(self.logger.getTestAcc(select="key"))
+            print(self.logger.getAvgActTime(select="key"))
         self.logger.logFileString.flush()
+        self.logger.logFileString.close()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
 
     def waitPracticeConfirm(self, event):
@@ -298,7 +300,7 @@ class mainProcess:
                 break
 
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
-        self.destroy(PRACTICE)
+        self.destroy(PRACTICE, output=False)
         self.showScreen[PRACTICE].mainloop()
 
     def realTest(self):
@@ -467,7 +469,7 @@ class mainProcess:
         # print(self.logger.getAvgActTime(select="key"))
         self.logger.logFileString.flush()
         # messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
-        self.destroy(REALTEST)
+        self.destroy(REALTEST, output=False)
         self.showScreen[REALTEST].mainloop()
 
 def Entrance():
@@ -488,7 +490,6 @@ def Entrance():
     button_2 = Button(master=frame, text="开始检测", width=30, height=4, command=mainprocess.realTest)
     button_2.pack()
     master.mainloop()
-    mainprocess.logger.logFileString.close()
 
 
 if __name__ == '__main__':

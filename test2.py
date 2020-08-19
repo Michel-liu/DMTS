@@ -49,6 +49,7 @@ class mainProcess:
         print(self.logger.getTestAcc(select="key"))
         print(self.logger.getAvgActTime(select="key"))
         self.logger.logFileString.flush()
+        self.logger.closeFile()
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
 
 
@@ -291,7 +292,6 @@ def Entrance():
     button_2 = Button(master=frame, text="开始检测", width=30, height=4, command=mainprocess.realTest)
     button_2.pack()
     master.mainloop()
-    mainprocess.logger.closeFile()
 
 
 if __name__ == '__main__':
