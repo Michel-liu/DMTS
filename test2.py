@@ -186,10 +186,11 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
+        messagebox.showinfo("负荷4测试", "负荷4测试共计1轮，点击右下OK继续！")
         for _ in range(1):
             showImg, testImg, trueMask = get2or3or4Imgs(4, imgTotalCount=10)
             # 1.屏幕中央出现一个十字
-            self.canvasChangePic(imPractice, r'./src/globle/1_5.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 2, PRACTICE, mainCanvas)
+            self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, 2, PRACTICE, mainCanvas)
             # 2. 随机出现四张图片
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT*9//10, self.SCREEN_HEIGHT*9//10, PRACTICE, mainCanvas, showImg)
             # 3. 出现一次白屏和一次黑屏
@@ -248,10 +249,11 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
+        messagebox.showinfo("负荷4测试", "负荷4测试共计10轮，点击右下OK继续！")
         for _ in range(10):
             showImg, testImg, trueMask = get2or3or4Imgs(4, imgTotalCount=10)
             # 1.屏幕中央出现一个十字
-            self.canvasChangePic(imPractice, r'./src/globle/1_5.png', self.SCREEN_HEIGHT * 9 // 10,
+            self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
                                  self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
             # 2. 随机出现四张图片
             rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,

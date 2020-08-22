@@ -137,7 +137,7 @@ class mainProcess:
                 self.CURRENTTRUE = False
             self.LOCK = False
             theCanva[0].wait_variable(self.controlVal[choice]['IntVar'])
-            self.canvasChangePic(imHandler, './src/test4/block.png', imgWidth, imgHeight, 0.05, choice, theCanva)
+            # self.canvasChangePic(imHandler, './src/test4/block.png', imgWidth, imgHeight, 0.05, choice, theCanva)
         self.logger.logSomething("\n", addTime=False)
 
     def RandomShow(self, imHandler, imgWidth, imgHeight, choice, theCanvas, epoch):
@@ -187,11 +187,13 @@ class mainProcess:
         # # 延迟识别-位置
         # ###################
         # 负荷 2
+        flag_2 = False
         while True:
             self.logger.imgShowInfoList = []
             self.logger.keyPressInfoList = []
             self.logger.mouseClickInfoList = []
-            messagebox.showinfo("负荷2", "负荷2,本轮测试共2轮！")
+            if not flag_2:
+                messagebox.showinfo("负荷2测试", "负荷2测试共计2轮，点击右下OK继续！")
             self.datasetControl = test4DatasetControl()
             self.datasetControl.createShowDataset(2, 2)
             self.datasetControl.createTestDataset()
@@ -210,22 +212,32 @@ class mainProcess:
 
             acc1 = self.logger.getTestAcc(select='key', write=False)
 
-            if acc1 < 0.80:
-                self.logger.logSomething("\n ACC < 80%; Again!\n", False)
-                self.logger.logFileString.flush()
-            else:
+            if acc1 < 0.60:
+                self.logger.logSomething("***********2张图片测试结果(未通过)************", False)
+                self.logger.logSomething("\nACC < 60%; Again!\n", False)
                 self.logger.getTestAcc(select='key')
                 self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
                 self.logger.logFileString.flush()
+                messagebox.showinfo("负荷2测试未通过", "测试未通过({:.2%})重新测试共计2轮，点击右下OK继续！".format(acc1))
+                flag_2 = True
+            else:
+                self.logger.logSomething("***********2张图片测试结果(通过)************", False)
+                self.logger.getTestAcc(select='key')
+                self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
+                self.logger.logFileString.flush()
+                flag_2 = False
                 break
 
+        flag_3 = False
         while True:
             self.logger.logFileString.flush()
             self.logger.imgShowInfoList = []
             self.logger.keyPressInfoList = []
             self.logger.mouseClickInfoList = []
-            self.logger.logSomething("********************", False)
-            messagebox.showinfo("负荷3", "负荷3,本轮测试共4轮！")
+            if not flag_3:
+                messagebox.showinfo("负荷3测试", "负荷3测试共计4轮，点击右下OK继续！")
             self.datasetControl = test4DatasetControl()
             self.datasetControl.createShowDataset(4, 3)
             self.datasetControl.createTestDataset()
@@ -249,24 +261,34 @@ class mainProcess:
 
             acc1 = self.logger.getTestAcc(select='key', write=False)
             # self.logger.getAvgActTime(select='key')
-            if acc1 < 0.80:
-                self.logger.logSomething("\n ACC < 80%; Again!\n", False)
-                self.logger.logFileString.flush()
-            else:
+            if acc1 < 0.60:
+                self.logger.logSomething("***********3张图片测试结果(未通过)************", False)
+                self.logger.logSomething("\nACC < 60%; Again!\n", False)
                 self.logger.getTestAcc(select='key')
                 self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
                 self.logger.logFileString.flush()
+                messagebox.showinfo("负荷3测试未通过", "测试未通过({:.2%})重新测试共计4轮，点击右下OK继续！".format(acc1))
+                flag_3 = True
+            else:
+                self.logger.logSomething("***********3张图片测试结果(通过)************", False)
+                self.logger.getTestAcc(select='key')
+                self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
+                self.logger.logFileString.flush()
+                flag_3 = False
                 break
 
         self.logger.logSomething("\n",False)
 
+        flag_4 = False
         while True:
             self.logger.logFileString.flush()
             self.logger.imgShowInfoList = []
             self.logger.keyPressInfoList = []
             self.logger.mouseClickInfoList = []
-            self.logger.logSomething("********************", False)
-            messagebox.showinfo("负荷4", "负荷4,本轮测试共2轮！")
+            if not flag_4:
+                messagebox.showinfo("负荷4测试", "负荷4测试共计2轮，点击右下OK继续！")
             self.datasetControl = test4DatasetControl()
             self.datasetControl.createShowDataset(2, 4)
             self.datasetControl.createTestDataset()
@@ -290,13 +312,22 @@ class mainProcess:
 
             acc1 = self.logger.getTestAcc(select='key', write=False)
             # self.logger.getAvgActTime(select='key')
-            if acc1 < 0.80:
-                self.logger.logSomething("\n ACC < 80%; Again!\n", False)
-                self.logger.logFileString.flush()
-            else:
+            if acc1 < 0.60:
+                self.logger.logSomething("***********4张图片测试结果(未通过)************", False)
+                self.logger.logSomething("\nACC < 60%; Again!\n", False)
                 self.logger.getTestAcc(select='key')
                 self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
                 self.logger.logFileString.flush()
+                messagebox.showinfo("负荷4测试未通过", "测试未通过({:.2%})重新测试共计2轮，点击右下OK继续！".format(acc1))
+                flag_4 = True
+            else:
+                self.logger.logSomething("***********4张图片测试结果(通过)************", False)
+                self.logger.getTestAcc(select='key')
+                self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
+                self.logger.logFileString.flush()
+                flag_4 = False
                 break
 
         messagebox.showinfo("测试结束", "测试已经结束，感谢您的使用！")
@@ -344,6 +375,7 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
+        flag_2 = False
         while True:
             self.logger.logFileString.flush()
             self.logger.imgShowInfoList = []
@@ -353,6 +385,9 @@ class mainProcess:
             self.datasetControl = test4DatasetControl()
             self.datasetControl.createShowDataset(10, 2)
             self.datasetControl.createTestDataset()
+            if not flag_2:
+                messagebox.showinfo("负荷2测试", "负荷2测试共计10轮，点击右下OK继续！")
+
             for _ in range(10):
                 # 1.屏幕中央出现一个十字
                 self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
@@ -373,15 +408,25 @@ class mainProcess:
 
             acc1 = self.logger.getTestAcc(select='key',write=False)
             # self.logger.getAvgActTime(select='key')
-            if acc1 < 0.80:
-                self.logger.logSomething("\n ACC < 80%; Again!\n", False)
-                self.logger.logFileString.flush()
-            else:
+            if acc1 < 0.60:
+                self.logger.logSomething("***********2张图片测试结果(未通过)************", False)
+                self.logger.logSomething("\nACC < 60%; Again!\n", False)
                 self.logger.getTestAcc(select='key')
                 self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
                 self.logger.logFileString.flush()
+                messagebox.showinfo("负荷2测试未通过", "测试未通过({:.2%})重新测试共计10轮，点击右下OK继续！".format(acc1))
+                flag_2 = True
+            else:
+                self.logger.logSomething("***********2张图片测试结果(通过)************", False)
+                self.logger.getTestAcc(select='key')
+                self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
+                self.logger.logFileString.flush()
+                flag_2 = False
                 break
 
+        flag_3 = False
         while True:
             self.logger.logSomething("\n", False)
             self.logger.logFileString.flush()
@@ -392,8 +437,8 @@ class mainProcess:
             self.datasetControl = test4DatasetControl()
             self.datasetControl.createShowDataset(10, 3)
             self.datasetControl.createTestDataset()
-            self.logger.logSomething("********************", False)
-
+            if not flag_3:
+                messagebox.showinfo("负荷3测试", "负荷3测试共计10轮，点击右下OK继续！")
             for _ in range(10):
                 # 1.屏幕中央出现一个十字
                 self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
@@ -415,15 +460,24 @@ class mainProcess:
             acc1 = self.logger.getTestAcc(select='key', write=False)
             # self.logger.getAvgActTime(select='key')
             self.logger.logSomething("\n",False)
-            if acc1 < 0.80:
-                self.logger.logSomething("\n ACC < 80%; Again!\n", False)
-                self.logger.logFileString.flush()
-            else:
+            if acc1 < 0.60:
+                self.logger.logSomething("***********3张图片测试结果(未通过)************", False)
+                self.logger.logSomething("\nACC < 60%; Again!\n", False)
                 self.logger.getTestAcc(select='key')
                 self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
                 self.logger.logFileString.flush()
+                messagebox.showinfo("负荷3测试未通过", "测试未通过({:.2%})重新测试共计10轮，点击右下OK继续！".format(acc1))
+                flag_3 = True
+            else:
+                self.logger.logSomething("***********3张图片测试结果(通过)************", False)
+                self.logger.getTestAcc(select='key')
+                self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
+                self.logger.logFileString.flush()
+                flag_3 = False
                 break
-
+        flag_4 = False
         while True:
             self.logger.logFileString.flush()
             self.logger.imgShowInfoList = []
@@ -433,8 +487,8 @@ class mainProcess:
             self.datasetControl = test4DatasetControl()
             self.datasetControl.createShowDataset(10, 4)
             self.datasetControl.createTestDataset()
-            self.logger.logSomething("********************", False)
-
+            if not flag_4:
+                messagebox.showinfo("负荷4测试", "负荷4测试共计10轮，点击右下OK继续！")
             for _ in range(10):
                 # 1.屏幕中央出现一个十字
                 self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
@@ -456,13 +510,22 @@ class mainProcess:
             acc1 = self.logger.getTestAcc(select='key', write=False)
             # self.logger.getAvgActTime(select='key')
             self.logger.logSomething("\n", False)
-            if acc1 < 0.80:
-                self.logger.logSomething("\n ACC < 80%; Again!\n", False)
-                self.logger.logFileString.flush()
-            else:
+            if acc1 < 0.60:
+                self.logger.logSomething("***********4张图片测试结果(未通过)************", False)
+                self.logger.logSomething("\nACC < 60%; Again!\n", False)
                 self.logger.getTestAcc(select='key')
                 self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
                 self.logger.logFileString.flush()
+                messagebox.showinfo("负荷4测试未通过", "测试未通过({:.2%})重新测试共计10轮，点击右下OK继续！".format(acc1))
+                flag_4 = True
+            else:
+                self.logger.logSomething("***********4张图片测试结果(通过)************", False)
+                self.logger.getTestAcc(select='key')
+                self.logger.getAvgActTime(select='key')
+                self.logger.logSomething("******************************************", False)
+                self.logger.logFileString.flush()
+                flag_4 = False
                 break
 
         # print(self.logger.getTestAcc(select="key"))

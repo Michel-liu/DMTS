@@ -191,6 +191,7 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
+        messagebox.showinfo("负荷3测试", "负荷3测试共计1轮，点击右下OK继续！")
         for _ in range(1):
             # 生成2张图片的数据集
             showImg, testImg, trueMask = get2or3or4Imgs(3)
@@ -221,6 +222,7 @@ class mainProcess:
         self.logger.imgShowInfoList = []
         self.logger.keyPressInfoList = []
         self.logger.mouseClickInfoList = []
+        messagebox.showinfo("负荷4测试", "负荷4测试共计1轮，点击右下OK继续！")
         for _ in range(1):
             # 生成2张图片的数据集
             showImg, testImg, trueMask = get2or3or4Imgs(4)
@@ -296,6 +298,7 @@ class mainProcess:
         # ####################
         # # 延迟识别-位置
         # ###################
+        messagebox.showinfo("负荷3测试", "负荷3测试共计10轮，点击右下OK继续！")
         for _ in range(10):
             showImg, testImg, trueMask = get2or3or4Imgs(3)
             # 1.屏幕中央出现一个十字
@@ -315,14 +318,17 @@ class mainProcess:
             self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
                                    mainCanvas, testImg, trueMask)
 
-            self.logger.logSomething("***********3张图片测试结果************", False)
-            self.logger.getTestAcc(select='key')
-            self.logger.getAvgActTime(select='key')
-            self.logger.logSomething("***********************************", False)
+        self.logger.logSomething("***********3张图片测试结果************", False)
+        self.logger.getTestAcc(select='key')
+        self.logger.getAvgActTime(select='key')
+        self.logger.logSomething("***********************************", False)
 
-            self.logger.imgShowInfoList = []
-            self.logger.keyPressInfoList = []
-            self.logger.mouseClickInfoList = []
+        self.logger.imgShowInfoList = []
+        self.logger.keyPressInfoList = []
+        self.logger.mouseClickInfoList = []
+        
+        messagebox.showinfo("负荷4测试", "负荷4测试共计10轮，点击右下OK继续！")
+
         for _ in range(10):
             showImg, testImg, trueMask = get2or3or4Imgs(4)
             # 1.屏幕中央出现一个十字
