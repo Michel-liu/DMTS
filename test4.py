@@ -335,13 +335,13 @@ class mainProcess:
         self.showScreen[PRACTICE].mainloop()
 
     def realTest(self):
-        prefixPath = './log/test4/realtest/'
+        prefixPath = './log/test4/'
         code = self.init_usernamename()
         if code == -1:
             return
         savepath = prefixPath + self.date + '-' + self.name + '-测试日志.log'
         self.logger = Logger(saveFilePath=savepath)
-        self.logger.logSomething("**********开始测试：位置-练习**********")
+        self.logger.logSomething("**********开始练习：位置-练习**********")
         self.controlVal[REALTEST]['state'] = 0
         self.CURRENTTRUE = False
 
@@ -383,12 +383,12 @@ class mainProcess:
             self.logger.mouseClickInfoList = []
 
             self.datasetControl = test4DatasetControl()
-            self.datasetControl.createShowDataset(10, 2)
+            self.datasetControl.createShowDataset(20, 2)
             self.datasetControl.createTestDataset()
             if not flag_2:
-                messagebox.showinfo("负荷2测试", "负荷2测试共计10轮，点击右下OK继续！")
+                messagebox.showinfo("负荷2测试", "负荷2测试共计20轮，点击右下OK继续！")
 
-            for _ in range(10):
+            for _ in range(20):
                 # 1.屏幕中央出现一个十字
                 self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
                                      self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
@@ -415,7 +415,7 @@ class mainProcess:
                 self.logger.getAvgActTime(select='key')
                 self.logger.logSomething("******************************************", False)
                 self.logger.logFileString.flush()
-                messagebox.showinfo("负荷2测试未通过", "测试未通过({:.2%})重新测试共计10轮，点击右下OK继续！".format(acc1))
+                messagebox.showinfo("负荷2测试未通过", "测试未通过({:.2%})重新测试共计20轮，点击右下OK继续！".format(acc1))
                 flag_2 = True
             else:
                 self.logger.logSomething("***********2张图片测试结果(通过)************", False)
@@ -435,11 +435,11 @@ class mainProcess:
             self.logger.mouseClickInfoList = []
 
             self.datasetControl = test4DatasetControl()
-            self.datasetControl.createShowDataset(10, 3)
+            self.datasetControl.createShowDataset(20, 3)
             self.datasetControl.createTestDataset()
             if not flag_3:
-                messagebox.showinfo("负荷3测试", "负荷3测试共计10轮，点击右下OK继续！")
-            for _ in range(10):
+                messagebox.showinfo("负荷3测试", "负荷3测试共计20轮，点击右下OK继续！")
+            for _ in range(20):
                 # 1.屏幕中央出现一个十字
                 self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
                                      self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
@@ -467,7 +467,7 @@ class mainProcess:
                 self.logger.getAvgActTime(select='key')
                 self.logger.logSomething("******************************************", False)
                 self.logger.logFileString.flush()
-                messagebox.showinfo("负荷3测试未通过", "测试未通过({:.2%})重新测试共计10轮，点击右下OK继续！".format(acc1))
+                messagebox.showinfo("负荷3测试未通过", "测试未通过({:.2%})重新测试共计20轮，点击右下OK继续！".format(acc1))
                 flag_3 = True
             else:
                 self.logger.logSomething("***********3张图片测试结果(通过)************", False)
@@ -485,11 +485,11 @@ class mainProcess:
             self.logger.mouseClickInfoList = []
 
             self.datasetControl = test4DatasetControl()
-            self.datasetControl.createShowDataset(10, 4)
+            self.datasetControl.createShowDataset(20, 4)
             self.datasetControl.createTestDataset()
             if not flag_4:
-                messagebox.showinfo("负荷4测试", "负荷4测试共计10轮，点击右下OK继续！")
-            for _ in range(10):
+                messagebox.showinfo("负荷4测试", "负荷4测试共计20轮，点击右下OK继续！")
+            for _ in range(20):
                 # 1.屏幕中央出现一个十字
                 self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
                                      self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
@@ -517,7 +517,7 @@ class mainProcess:
                 self.logger.getAvgActTime(select='key')
                 self.logger.logSomething("******************************************", False)
                 self.logger.logFileString.flush()
-                messagebox.showinfo("负荷4测试未通过", "测试未通过({:.2%})重新测试共计10轮，点击右下OK继续！".format(acc1))
+                messagebox.showinfo("负荷4测试未通过", "测试未通过({:.2%})重新测试共计20轮，点击右下OK继续！".format(acc1))
                 flag_4 = True
             else:
                 self.logger.logSomething("***********4张图片测试结果(通过)************", False)
@@ -548,9 +548,9 @@ def Entrance():
     entry = Entry(master=frame, width=30)
     entry.pack()
     mainprocess = mainProcess(entry)
-    button_1 = Button(master=frame, text="开始练习", width=30, height=4, command=mainprocess.practice)
-    button_1.pack()
-    button_2 = Button(master=frame, text="开始检测", width=30, height=4, command=mainprocess.realTest)
+    # button_1 = Button(master=frame, text="开始练习", width=30, height=4, command=mainprocess.practice)
+    # button_1.pack()
+    button_2 = Button(master=frame, text="开始练习", width=30, height=4, command=mainprocess.realTest)
     button_2.pack()
     master.mainloop()
 

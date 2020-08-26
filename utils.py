@@ -524,12 +524,14 @@ def get2or3or4Imgs(needLen, imgTotalCount=16, acc=0.25):
     return showImgIndex, testImgIndex, trueMask
 
 def createLogDirection():
-    for i in range(4):
+    for i in range(3):
         string = "./log/test" + str(i+1)
         for j in ['realtest','practice']:
             path = os.path.join(string,j)
             if not os.path.exists(path):
                  os.makedirs(path)
+    if not os.path.exists("./log/test4"):
+        os.makedirs("./log/test4")
 
 
 if __name__ == '__main__':
