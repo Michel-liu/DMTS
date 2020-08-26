@@ -477,56 +477,56 @@ class mainProcess:
                 self.logger.logFileString.flush()
                 flag_3 = False
                 break
-        flag_4 = False
-        while True:
-            self.logger.logFileString.flush()
-            self.logger.imgShowInfoList = []
-            self.logger.keyPressInfoList = []
-            self.logger.mouseClickInfoList = []
-
-            self.datasetControl = test4DatasetControl()
-            self.datasetControl.createShowDataset(20, 4)
-            self.datasetControl.createTestDataset()
-            if not flag_4:
-                messagebox.showinfo("负荷4测试", "负荷4测试共计20轮，点击右下OK继续！")
-            for _ in range(20):
-                # 1.屏幕中央出现一个十字
-                self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
-                                     self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
-                # 2. 随机出现四张图片
-                rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
-                                            REALTEST, mainCanvas, _)
-                # 3. 出现一次白屏和一次黑屏
-                self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
-                                     self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
-                self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
-                                     self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
-                # 4. 测试阶段
-                mainCanvas[0].pack()
-                mainCanvas[0].focus_set()
-                self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
-                                       mainCanvas, rightInts, _)
-
-            acc1 = self.logger.getTestAcc(select='key', write=False)
-            # self.logger.getAvgActTime(select='key')
-            self.logger.logSomething("\n", False)
-            if acc1 < 0.60:
-                self.logger.logSomething("***********4张图片测试结果(未通过)************", False)
-                self.logger.logSomething("\nACC < 60%; Again!\n", False)
-                self.logger.getTestAcc(select='key')
-                self.logger.getAvgActTime(select='key')
-                self.logger.logSomething("******************************************", False)
-                self.logger.logFileString.flush()
-                messagebox.showinfo("负荷4测试未通过", "测试未通过({:.2%})重新测试共计20轮，点击右下OK继续！".format(acc1))
-                flag_4 = True
-            else:
-                self.logger.logSomething("***********4张图片测试结果(通过)************", False)
-                self.logger.getTestAcc(select='key')
-                self.logger.getAvgActTime(select='key')
-                self.logger.logSomething("******************************************", False)
-                self.logger.logFileString.flush()
-                flag_4 = False
-                break
+        # flag_4 = False
+        # while True:
+        #     self.logger.logFileString.flush()
+        #     self.logger.imgShowInfoList = []
+        #     self.logger.keyPressInfoList = []
+        #     self.logger.mouseClickInfoList = []
+        #
+        #     self.datasetControl = test4DatasetControl()
+        #     self.datasetControl.createShowDataset(20, 4)
+        #     self.datasetControl.createTestDataset()
+        #     if not flag_4:
+        #         messagebox.showinfo("负荷4测试", "负荷4测试共计20轮，点击右下OK继续！")
+        #     for _ in range(20):
+        #         # 1.屏幕中央出现一个十字
+        #         self.canvasChangePic(imPractice, r'./src/globle/1_16.png', self.SCREEN_HEIGHT * 9 // 10,
+        #                              self.SCREEN_HEIGHT * 9 // 10, 2, REALTEST, mainCanvas)
+        #         # 2. 随机出现四张图片
+        #         rightInts = self.RandomShow(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10,
+        #                                     REALTEST, mainCanvas, _)
+        #         # 3. 出现一次白屏和一次黑屏
+        #         self.canvasChangePic_(imPractice, './src/globle/white.png', self.SCREEN_WIDTH,
+        #                              self.SCREEN_HEIGHT * 9 // 10, 0.1, REALTEST, mainCanvas)
+        #         self.canvasChangePic(imPractice, './src/globle/black_word.png', self.SCREEN_HEIGHT * 9 // 10,
+        #                              self.SCREEN_HEIGHT * 9 // 10, 3, REALTEST, mainCanvas)
+        #         # 4. 测试阶段
+        #         mainCanvas[0].pack()
+        #         mainCanvas[0].focus_set()
+        #         self.testDelayPosition(imPractice, self.SCREEN_HEIGHT * 9 // 10, self.SCREEN_HEIGHT * 9 // 10, REALTEST,
+        #                                mainCanvas, rightInts, _)
+        #
+        #     acc1 = self.logger.getTestAcc(select='key', write=False)
+        #     # self.logger.getAvgActTime(select='key')
+        #     self.logger.logSomething("\n", False)
+        #     if acc1 < 0.60:
+        #         self.logger.logSomething("***********4张图片测试结果(未通过)************", False)
+        #         self.logger.logSomething("\nACC < 60%; Again!\n", False)
+        #         self.logger.getTestAcc(select='key')
+        #         self.logger.getAvgActTime(select='key')
+        #         self.logger.logSomething("******************************************", False)
+        #         self.logger.logFileString.flush()
+        #         messagebox.showinfo("负荷4测试未通过", "测试未通过({:.2%})重新测试共计20轮，点击右下OK继续！".format(acc1))
+        #         flag_4 = True
+        #     else:
+        #         self.logger.logSomething("***********4张图片测试结果(通过)************", False)
+        #         self.logger.getTestAcc(select='key')
+        #         self.logger.getAvgActTime(select='key')
+        #         self.logger.logSomething("******************************************", False)
+        #         self.logger.logFileString.flush()
+        #         flag_4 = False
+        #         break
 
         # print(self.logger.getTestAcc(select="key"))
         # print(self.logger.getAvgActTime(select="key"))
